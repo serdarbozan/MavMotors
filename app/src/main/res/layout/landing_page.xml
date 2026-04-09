@@ -160,7 +160,7 @@
         android:id="@+id/button2"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="-25dp"
+        android:layout_marginBottom="-30dp"
         android:backgroundTint="@color/main_orange"
         android:gravity="center"
         android:text="+"
@@ -168,7 +168,22 @@
         app:cornerRadius="30dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/filterChips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:paddingStart="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchInput"
+        app:singleSelection="true">
+
+    </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
