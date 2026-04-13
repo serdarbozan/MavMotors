@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     val room_version = "2.8.4"
     implementation("androidx.room:room-runtime:${room_version}")

@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CoroutineScope
@@ -16,6 +19,9 @@ import kotlinx.coroutines.withContext
 
 class LandingPage : AppCompatActivity() {
     private lateinit var vehicleDao: VehicleDao
+    private lateinit var vehicleAdapter: VehicleAdapter
+    private lateinit var recyclerView: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -23,6 +29,11 @@ class LandingPage : AppCompatActivity() {
 
         val db = DatabaseProvider.getDatabase(this)
         vehicleDao = db.vehicleDao()
+
+        recyclerView = findViewById(R.id.carRender)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
+        vehicleAdapter = VehicleAdapter(emptyList())
+        recyclerView.adapter = vehicleAdapter
 
         lifecycleScope.launch{
             insertSampleVehicle()
@@ -33,9 +44,11 @@ class LandingPage : AppCompatActivity() {
     private suspend fun insertSampleVehicle(){
         vehicleDao.deleteAllVehicles()
         val newVehicles = listOf(
-            Vehicle(type = "SUV", price = 30000.0, mileage = 5000, postedDate = System.currentTimeMillis(), status = "Available"),
-            Vehicle(type="Sedan", price= 30000.0, mileage = 6000, postedDate = System.currentTimeMillis(), status = "Available"),
-            Vehicle(type="Convertible", price= 30000.0, mileage = 7000, postedDate = System.currentTimeMillis(), status = "Available")
+            Vehicle(type = "SUV", price = 30000.0, mileage = 5000, postedDate = System.currentTimeMillis(), status = "Available", year = 2019),
+            Vehicle(type="Sedan", price= 30000.0, mileage = 6000, postedDate = System.currentTimeMillis(), status = "Available", year = 2019),
+            Vehicle(type="Convertible", price= 30000.0, mileage = 7000, postedDate = System.currentTimeMillis(), status = "Available", year = 2019),
+            Vehicle(type="Convertible", price= 30000.0, mileage = 7000, postedDate = System.currentTimeMillis(), status = "Available", year = 2019),
+            Vehicle(type="Convertible", price= 30000.0, mileage = 7000, postedDate = System.currentTimeMillis(), status = "Available", year = 2019)
         )
         for(v in newVehicles){
             vehicleDao.insertVehicle(v)
@@ -67,6 +80,12 @@ class LandingPage : AppCompatActivity() {
     }
 
     private suspend fun loadAllVehicles(){
+        val vehicles = withContext(Dispatchers.IO){
+            vehicleDao.getAllVehicles()
+        }
 
+        withContext(Dispatchers.Main){
+            vehicleAdapter.updateVehicles(vehicles)
+        }
     }
 }
