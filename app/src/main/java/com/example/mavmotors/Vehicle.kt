@@ -11,5 +11,6 @@ data class Vehicle(
     val mileage: Int,
     val postedDate: Long,
     val status: String,
+    val year: Int,
     val isActive: Boolean = true
 )
