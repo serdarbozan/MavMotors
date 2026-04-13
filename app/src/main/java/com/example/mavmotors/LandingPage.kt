@@ -27,41 +27,46 @@ class LandingPage : AppCompatActivity() {
         lifecycleScope.launch{
             insertSampleVehicle()
             loadTopVehicleTypes()
+            loadAllVehicles()
         }
     }
     private suspend fun insertSampleVehicle(){
         vehicleDao.deleteAllVehicles()
         val newVehicles = listOf(
             Vehicle(type = "SUV", price = 30000.0, mileage = 5000, postedDate = System.currentTimeMillis(), status = "Available"),
-            Vehicle(type="Sedan", price= 30000.0, mileage = 5000, postedDate = System.currentTimeMillis(), status = "Available"),
-            Vehicle(type="Convertible", price= 30000.0, mileage = 5000, postedDate = System.currentTimeMillis(), status = "Available")
+            Vehicle(type="Sedan", price= 30000.0, mileage = 6000, postedDate = System.currentTimeMillis(), status = "Available"),
+            Vehicle(type="Convertible", price= 30000.0, mileage = 7000, postedDate = System.currentTimeMillis(), status = "Available")
         )
         for(v in newVehicles){
             vehicleDao.insertVehicle(v)
         }
 
     }
-    private suspend fun loadTopVehicleTypes(){
-        val filterChips = findViewById<ChipGroup>(R.id.filterChips)
-
-        withContext(Dispatchers.Main){
-            filterChips.removeAllViews()
-        }
+    private suspend fun loadTopVehicleTypes() {
         val topTypes: List<String> = vehicleDao.getTopVehicleTypes()
 
-        withContext(Dispatchers.Main){
-            val allChip = Chip(ContextThemeWrapper(filterChips.context, R.style.CustomFilterChip), null, 0).apply{
+        withContext(Dispatchers.Main) {
+            val filterChips = findViewById<ChipGroup>(R.id.filterChips)
+            filterChips.removeAllViews()
+
+            val allChip = Chip(
+                ContextThemeWrapper(filterChips.context, R.style.CustomFilterChip), null, 0).apply {
                 text = "All"
                 isCheckable = true
             }
             filterChips.addView(allChip)
-            for(type in topTypes){
-                val chip = Chip(ContextThemeWrapper(filterChips.context, R.style.CustomFilterChip), null, 0).apply{
+            for (type in topTypes) {
+                val chip = Chip(
+                    ContextThemeWrapper(filterChips.context, R.style.CustomFilterChip), null, 0).apply {
                     text = type
                     isCheckable = true
                 }
                 filterChips.addView(chip)
             }
         }
+    }
+
+    private suspend fun loadAllVehicles(){
+
     }
 }
