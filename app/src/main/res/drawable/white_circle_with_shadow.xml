@@ -11,14 +11,14 @@
         </shape>
     </item>
 
-    <!-- White circle -->
+    <!-- Circle background - uses theme-aware color -->
     <item
         android:left="0dp"
         android:top="0dp"
         android:right="2dp"
         android:bottom="2dp">
         <shape android:shape="oval">
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/heart_bg" />
             <size
                 android:width="48dp"
                 android:height="48dp" />

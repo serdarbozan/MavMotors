@@ -10,22 +10,37 @@
     <color name="orange_dark">#F5922A</color>
 
     <!-- Light Mode -->
-    <color name="background_light">#1B7FA3</color>
-    <color name="surface_light">#FFFFFF</color>
-    <color name="text_primary_light">#0D1B2A</color>
-    <color name="text_secondary_light">#4A7A8A</color>
-    <color name="border_light">#B2D8E8</color>
+    <color name="background_light">#FFFFFF</color>
+    <color name="top_border">#155F7A</color>
+    <color name="chip_selected_bg">#E8720C</color>
+    <color name="chip_selected_text">#FFFFFF</color>
+    <color name="chip_default_text">#000000</color>
+    <color name="chip_border_light">#B2D8E8</color>
     <color name="image_placeholder_light">#B2D8E8</color>
-    <color name="chip_text_light">#1B7FA3</color>
+    <color name="infoTitle">#0D1B2A</color>
+    <color name="infoPrice">#E8720C</color>
+    <color name="infoDetails">#4A7A8A</color>
+    <color name="border_light">#B2D8E8</color>
+    <color name="heart_bg">#FFFFFF</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="hint_color_light">#757575</color>
+
 
     <!-- Dark Mode -->
     <color name="background_dark">#0D1B2A</color>
-    <color name="surface_dark">#162436</color>
-    <color name="top_bar_dark">#0A1628</color>
-    <color name="text_primary_dark">#EAF3FF</color>
-    <color name="text_secondary_dark">#7AADCC</color>
-    <color name="border_dark">#1E3A52</color>
+    <color name="top_border_dark">#155F7A</color>
+    <color name="chip_selected_bg_dark">#E8720C</color>
+    <color name="chip_selected_text_dark">#FFFFFF</color>
+    <color name="chip_default_text_dark">#FFFFFF</color>
+    <color name="chip_border_dark">#1E3A52</color>
     <color name="image_placeholder_dark">#1E3A52</color>
+    <color name="infoTitle_dark">#FFFFFF</color>
+    <color name="infoPrice_dark">#E8720C</color>
+    <color name="infoDetails_dark">#7AADCC</color>
+    <color name="border_dark">#1E3A52</color>
+    <color name="heart_bg_dark">#1E3A52</color>
+    <color name="card_bg_dark">#162436</color>
+    <color name="hint_color_dark">#B0B0B0</color>
 
     <!-- Shared -->
     <color name="white">#FFFFFF</color>

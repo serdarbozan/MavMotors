@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_blue"
+    android:background="?android:attr/windowBackground"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,13 +16,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add New Vehicle"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Clickable Image Box -->
         <androidx.cardview.widget.CardView
             android:id="@+id/imagePickerCard"
             android:layout_width="match_parent"
@@ -33,6 +32,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:layout_constraintTop_toBottomOf="@+id/titleText">
 
             <FrameLayout
@@ -52,7 +52,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_camera"
-                        app:tint="#757575" />
+                        app:tint="?attr/colorOnSurface" />
 
                     <TextView
                         android:id="@+id/imageHintText"
@@ -60,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Tap to add vehicle image"
-                        android:textColor="#757575"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -76,7 +76,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Form Fields Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/formCard"
             android:layout_width="match_parent"
@@ -84,6 +83,7 @@
             android:layout_marginTop="20dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:layout_constraintTop_toBottomOf="@+id/imagePickerCard">
 
             <LinearLayout
@@ -96,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Vehicle Type"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold" />
 
                 <EditText
@@ -107,14 +107,15 @@
                     android:background="@drawable/white_bg_round_corner"
                     android:hint="e.g., SUV, Sedan, Truck"
                     android:paddingStart="12dp"
-                    android:paddingEnd="12dp" />
+                    android:paddingEnd="12dp"
+                    android:textColor="?attr/colorOnSurface" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Year"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold" />
 
                 <EditText
@@ -126,14 +127,15 @@
                     android:hint="e.g., 2023"
                     android:inputType="number"
                     android:paddingStart="12dp"
-                    android:paddingEnd="12dp" />
+                    android:paddingEnd="12dp"
+                    android:textColor="?attr/colorOnSurface" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Price ($)"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold" />
 
                 <EditText
@@ -145,14 +147,15 @@
                     android:hint="e.g., 25000"
                     android:inputType="numberDecimal"
                     android:paddingStart="12dp"
-                    android:paddingEnd="12dp" />
+                    android:paddingEnd="12dp"
+                    android:textColor="?attr/colorOnSurface" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Mileage"
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold" />
 
                 <EditText
@@ -164,13 +167,13 @@
                     android:hint="e.g., 15000"
                     android:inputType="number"
                     android:paddingStart="12dp"
-                    android:paddingEnd="12dp" />
+                    android:paddingEnd="12dp"
+                    android:textColor="?attr/colorOnSurface" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Buttons at the bottom -->
         <LinearLayout
             android:id="@+id/buttonContainer"
             android:layout_width="match_parent"
@@ -187,7 +190,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/darker_gray"
                 android:text="Cancel"
-                android:textColor="@color/white" />
+                android:textColor="?attr/colorOnPrimary" />
 
             <Button
                 android:id="@+id/saveCarButton"
@@ -195,9 +198,9 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/main_orange"
+                android:backgroundTint="?attr/colorSecondary"
                 android:text="Save Vehicle"
-                android:textColor="@color/white" />
+                android:textColor="?attr/colorOnSecondary" />
 
         </LinearLayout>
 

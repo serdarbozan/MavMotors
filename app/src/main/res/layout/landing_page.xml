@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_blue">
+    android:background="?android:attr/windowBackground">
 
     <LinearLayout
         android:id="@+id/topHeader"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/teal_dark"
+        android:background="?attr/colorPrimaryVariant"
         android:orientation="horizontal"
         android:paddingStart="20dp"
         android:paddingEnd="5dp"
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/username"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -72,7 +72,6 @@
         android:inputType="text"
         android:paddingStart="20dp"
         android:paddingEnd="15dp"
-        android:textColorHint="@color/text_secondary_light"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -111,11 +110,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chipScrollView" />
 
+    <Button
+        android:id="@+id/addBtn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="-30dp"
+        android:backgroundTint="?attr/colorSecondary"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:text="+"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="30sp"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <FrameLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/teal_dark"
+        android:background="?attr/colorPrimaryVariant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -137,7 +152,7 @@
                 android:drawableTop="@drawable/home"
                 android:gravity="center"
                 android:text="Home"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnPrimary"
                 android:textStyle="bold" />
 
             <TextView
@@ -148,7 +163,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Saved"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnPrimary"
                 android:textStyle="bold" />
 
             <TextView
@@ -159,7 +174,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Sell"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnPrimary"
                 android:textStyle="bold" />
 
             <TextView
@@ -171,7 +186,7 @@
                 android:drawableTop="@drawable/cart_outline"
                 android:gravity="center"
                 android:text="Cart"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnPrimary"
                 android:textStyle="bold" />
 
             <TextView
@@ -183,26 +198,10 @@
                 android:drawableTop="@drawable/logout"
                 android:gravity="center"
                 android:text="Logout"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnPrimary"
                 android:textStyle="bold" />
         </LinearLayout>
 
     </FrameLayout>
-
-    <!-- Button moved AFTER bottomNav to appear on top -->
-    <Button
-        android:id="@+id/addBtn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="-30dp"
-        android:backgroundTint="@color/main_orange"
-        android:gravity="center"
-        android:text="+"
-        android:textSize="30sp"
-        android:elevation="8dp"
-        app:cornerRadius="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

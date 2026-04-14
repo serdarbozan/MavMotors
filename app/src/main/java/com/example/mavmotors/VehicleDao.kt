@@ -32,4 +32,7 @@ interface VehicleDao{
        """)
    suspend fun getTopVehicleTypes(): List<String>
 
+    @Query("SELECT * FROM vehicles WHERE type = :type ORDER BY postedDate DESC")
+    suspend fun getVehiclesByType(type: String): List<Vehicle>
+
 }
