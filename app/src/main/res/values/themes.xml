@@ -1,9 +1,29 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.MavMotors" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MavMotors" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary Colors -->
+        <item name="colorPrimary">@color/teal_blue</item>
+        <item name="colorPrimaryVariant">@color/teal_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
 
-    <style name="Theme.MavMotors" parent="Base.Theme.MavMotors" />
+        <!-- Secondary/Accent Colors -->
+        <item name="colorSecondary">@color/main_orange</item>
+        <item name="colorSecondaryVariant">@color/orange_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Background Colors -->
+        <item name="android:windowBackground">@color/background_light</item>
+        <item name="colorSurface">@color/card_bg</item>
+        <item name="colorOnSurface">@color/infoTitle</item>
+
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/top_border</item>
+
+        <!-- Text Colors -->
+        <item name="android:textColorHint">@color/hint_color_light</item>
+
+        <!-- Error Color -->
+        <item name="colorError">@color/main_orange</item>
+        <item name="colorOnError">@color/white</item>
+    </style>
 </resources>
