@@ -13,7 +13,5 @@ class SignUpPage : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.signup_page)
 
-        startActivity(Intent(this, LandingPage::class.java))
-        finish()
     }
 }
