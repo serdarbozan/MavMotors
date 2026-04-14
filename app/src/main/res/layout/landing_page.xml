@@ -191,7 +191,7 @@
 
     <!-- Button moved AFTER bottomNav to appear on top -->
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/addBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginBottom="-30dp"

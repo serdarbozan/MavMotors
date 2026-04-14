@@ -1,7 +1,9 @@
 package com.example.mavmotors
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.ContextThemeWrapper
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -35,9 +37,23 @@ class LandingPage : AppCompatActivity() {
         vehicleAdapter = VehicleAdapter(emptyList())
         recyclerView.adapter = vehicleAdapter
 
+        val addButton = findViewById<Button>(R.id.addBtn)
+        addButton.setOnClickListener {
+            val intent = Intent(this, AddCarActivity::class.java)
+            startActivity(intent)
+        }
+
         lifecycleScope.launch{
             insertSampleVehicle()
             loadTopVehicleTypes()
+            loadAllVehicles()
+        }
+
+    }
+
+    override fun onResume(){
+        super.onResume()
+        lifecycleScope.launch{
             loadAllVehicles()
         }
     }

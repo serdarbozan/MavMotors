@@ -35,6 +35,21 @@ class VehicleAdapter(
         val vehicle = vehicles[position]
 
         // Load image from local path
+        if (vehicle.imagePath.isNotEmpty()) {
+            val imageFile = File(vehicle.imagePath)
+            if (imageFile.exists()) {
+                Glide.with(holder.itemView.context)
+                    .load(imageFile)
+                    .placeholder(R.drawable.placeholder_car)
+                    .error(R.drawable.placeholder_car)
+                    .centerCrop()
+                    .into(holder.vehicleImage)
+            } else {
+                holder.vehicleImage.setImageResource(R.drawable.placeholder_car)
+            }
+        } else {
+            holder.vehicleImage.setImageResource(R.drawable.placeholder_car)
+        }
 
         // Rest of your binding code...
         holder.typeTextView.text = "${vehicle.year} ${vehicle.type}"

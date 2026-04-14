@@ -12,5 +12,6 @@ data class Vehicle(
     val postedDate: Long,
     val status: String,
     val year: Int,
+    val imagePath: String = "",
     val isActive: Boolean = true
 )
