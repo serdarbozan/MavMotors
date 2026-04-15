@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ class SignUpPage : AppCompatActivity()
         val passwordField = findViewById<EditText>(R.id.editText3)
         val confirmPasswordField = findViewById<EditText>(R.id.editText4)
         val signUpButton = findViewById<MaterialButton>(R.id.button)
+        val tvGoToLogin = findViewById<TextView>(R.id.tvGoToLogin)
 
         val prefs: SharedPreferences = getSharedPreferences("MavMotorsPrefs", MODE_PRIVATE)
 
@@ -52,6 +54,11 @@ class SignUpPage : AppCompatActivity()
                 startActivity(Intent(this, LogInPage::class.java))
                 finish()
             }
+        }
+
+        tvGoToLogin.setOnClickListener {
+            startActivity(Intent(this, LogInPage::class.java))
+            finish()
         }
     }
 }
