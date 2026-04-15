@@ -1,6 +1,7 @@
 package com.example.mavmotors
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -29,6 +30,7 @@ class AddCarActivity : AppCompatActivity() {
     private lateinit var selectedImageView: ImageView
     private lateinit var cameraIcon: ImageView
     private lateinit var imageHintText: TextView
+    private lateinit var sharedPrefs: SharedPreferences
 
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -54,6 +56,7 @@ class AddCarActivity : AppCompatActivity() {
 
         val db = DatabaseProvider.getDatabase(this)
         vehicleDao = db.vehicleDao()
+        sharedPrefs = getSharedPreferences("MavMotorsPrefs", MODE_PRIVATE)
 
         val imagePickerCard = findViewById<CardView>(R.id.imagePickerCard)
         selectedImageView = findViewById(R.id.selectedImageView)
@@ -77,6 +80,14 @@ class AddCarActivity : AppCompatActivity() {
             val mileage = mileageInput.text.toString().toIntOrNull()
             val year = yearInput.text.toString().toIntOrNull()
 
+            // Get current user ID
+            val currentUserId = sharedPrefs.getInt("logged_in_user_id", -1)
+
+            if (currentUserId == -1) {
+                Toast.makeText(this, "Error: User not logged in", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (type.isNotEmpty() && price != null && mileage != null && year != null) {
                 lifecycleScope.launch {
                     // Save image to internal storage and get the path
@@ -89,7 +100,8 @@ class AddCarActivity : AppCompatActivity() {
                         year = year,
                         postedDate = System.currentTimeMillis(),
                         status = "Available",
-                        imagePath = imagePath  // Store the local file path
+                        imagePath = imagePath,
+                        sellerId = currentUserId  // NEW: Set the seller ID
                     )
 
                     vehicleDao.insertVehicle(vehicle)

@@ -1,11 +1,14 @@
 package com.example.mavmotors
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.Button
-import androidx.activity.enableEdgeToEdge
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,33 +21,51 @@ import kotlinx.coroutines.withContext
 
 class LandingPage : AppCompatActivity() {
     private lateinit var vehicleDao: VehicleDao
+    private lateinit var userSavedVehicleDao: UserSavedVehicleDao
     private lateinit var vehicleAdapter: VehicleAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var sharedPrefs: SharedPreferences
+
+    private var currentUserId: Int = -1
+    private var showingMyListings: Boolean = false
+    private var currentFilterType: String = "All"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Apply theme before setting content view
         ThemeManager.applyTheme(this)
-
-        enableEdgeToEdge()
         setContentView(R.layout.landing_page)
+
+        sharedPrefs = getSharedPreferences("MavMotorsPrefs", MODE_PRIVATE)
+        currentUserId = sharedPrefs.getInt("logged_in_user_id", -1)
+
+        val menuBtn = findViewById<ImageView>(R.id.menuBtn)
+        menuBtn.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        val username = intent.getStringExtra("USERNAME") ?: "User"
+        findViewById<TextView>(R.id.usernameDisplay).text = username
 
         val db = DatabaseProvider.getDatabase(this)
         vehicleDao = db.vehicleDao()
+        userSavedVehicleDao = db.userSavedVehicleDao()
 
-        // Setup RecyclerView
         recyclerView = findViewById(R.id.carRender)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
-        vehicleAdapter = VehicleAdapter(emptyList())
+        vehicleAdapter = VehicleAdapter(emptyList()) { vehicle, isSaved ->
+            handleHeartClick(vehicle, isSaved)
+        }
         recyclerView.adapter = vehicleAdapter
 
-        // Add button click listener
         val addButton = findViewById<Button>(R.id.addBtn)
         addButton.setOnClickListener {
             val intent = Intent(this, AddCarActivity::class.java)
             startActivity(intent)
         }
+
+        setupBottomNavigation()
 
         lifecycleScope.launch {
             insertSampleVehiclesIfEmpty()
@@ -56,9 +77,71 @@ class LandingPage : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         lifecycleScope.launch {
-            // Refresh both chips and vehicles when returning to this screen
             loadTopVehicleTypes()
             loadAllVehicles()
+        }
+    }
+
+    private fun setupBottomNavigation() {
+        val homeBtn = findViewById<TextView>(R.id.homeBtn)
+        val savedBtn = findViewById<TextView>(R.id.savedBtn)
+        val sellTxt = findViewById<TextView>(R.id.sellTxt)
+        val logoutBtn = findViewById<TextView>(R.id.logoutBtn)
+
+        homeBtn.setOnClickListener {
+            showingMyListings = false
+            currentFilterType = "All"
+            lifecycleScope.launch {
+                loadTopVehicleTypes()
+                loadAllVehicles()
+            }
+        }
+
+        savedBtn.setOnClickListener {
+            val intent = Intent(this, SavedVehiclesActivity::class.java)
+            startActivity(intent)
+        }
+
+        sellTxt.setOnClickListener {
+            showingMyListings = true
+            currentFilterType = "All"
+            lifecycleScope.launch {
+                val filterChips = findViewById<ChipGroup>(R.id.filterChips)
+                for (i in 0 until filterChips.childCount) {
+                    val child = filterChips.getChildAt(i)
+                    if (child is Chip && child.text == "All") {
+                        child.isChecked = true
+                        break
+                    }
+                }
+                loadMyListings()
+            }
+        }
+
+        logoutBtn.setOnClickListener {
+            sharedPrefs.edit().remove("logged_in_user_id").apply()
+            val intent = Intent(this, LogInPage::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun handleHeartClick(vehicle: Vehicle, isSaved: Boolean) {
+        lifecycleScope.launch {
+            if (currentUserId != -1) {
+                if (isSaved) {
+                    val saved = UserSavedVehicle(
+                        userId = currentUserId,
+                        vehicleId = vehicle.id
+                    )
+                    userSavedVehicleDao.saveVehicle(saved)
+                    Toast.makeText(this@LandingPage, "Saved to favorites", Toast.LENGTH_SHORT).show()
+                } else {
+                    userSavedVehicleDao.unsaveVehicle(currentUserId, vehicle.id)
+                    Toast.makeText(this@LandingPage, "Removed from favorites", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -66,8 +149,6 @@ class LandingPage : AppCompatActivity() {
         val existingVehicles = vehicleDao.getAllVehicles()
 
         if (existingVehicles.isEmpty()) {
-            android.util.Log.d("LandingPage", "Database is empty - adding sample vehicles")
-
             val sampleVehicles = listOf(
                 Vehicle(
                     type = "SUV",
@@ -76,7 +157,8 @@ class LandingPage : AppCompatActivity() {
                     year = 2023,
                     postedDate = System.currentTimeMillis(),
                     status = "Available",
-                    imagePath = ""
+                    imagePath = "",
+                    sellerId = 0
                 ),
                 Vehicle(
                     type = "Sedan",
@@ -85,17 +167,14 @@ class LandingPage : AppCompatActivity() {
                     year = 2022,
                     postedDate = System.currentTimeMillis(),
                     status = "Available",
-                    imagePath = ""
+                    imagePath = "",
+                    sellerId = 0
                 )
             )
 
             for (vehicle in sampleVehicles) {
                 vehicleDao.insertVehicle(vehicle)
             }
-
-            android.util.Log.d("LandingPage", "Added ${sampleVehicles.size} sample vehicles")
-        } else {
-            android.util.Log.d("LandingPage", "Database already has ${existingVehicles.size} vehicles - skipping sample data")
         }
     }
 
@@ -104,19 +183,16 @@ class LandingPage : AppCompatActivity() {
 
         withContext(Dispatchers.Main) {
             val filterChips = findViewById<ChipGroup>(R.id.filterChips)
-
-            // Save the currently selected chip text before clearing
             val selectedChipId = filterChips.checkedChipId
             val selectedType = if (selectedChipId != View.NO_ID) {
                 val selectedChip = findViewById<Chip>(selectedChipId)
                 selectedChip?.text?.toString()
             } else {
-                "All"
+                currentFilterType
             }
 
             filterChips.removeAllViews()
 
-            // Create "All" chip
             val allChip = Chip(
                 ContextThemeWrapper(filterChips.context, R.style.CustomFilterChip),
                 null,
@@ -128,7 +204,6 @@ class LandingPage : AppCompatActivity() {
             }
             filterChips.addView(allChip)
 
-            // Create type chips
             for (type in topTypes) {
                 val chip = Chip(
                     ContextThemeWrapper(filterChips.context, R.style.CustomFilterChip),
@@ -142,7 +217,6 @@ class LandingPage : AppCompatActivity() {
                 filterChips.addView(chip)
             }
 
-            // Restore selection or default to "All"
             if (selectedType == "All") {
                 allChip.isChecked = true
             } else {
@@ -160,43 +234,81 @@ class LandingPage : AppCompatActivity() {
                 }
             }
 
-            // Add chip click listener
             filterChips.setOnCheckedStateChangeListener { group, checkedIds ->
                 if (checkedIds.isEmpty()) {
                     allChip.isChecked = true
                 }
-
                 val currentSelectedId = group.checkedChipId
                 if (currentSelectedId != View.NO_ID) {
                     val selectedChip = findViewById<Chip>(currentSelectedId)
-                    filterVehiclesByType(selectedChip?.text?.toString())
+                    currentFilterType = selectedChip?.text?.toString() ?: "All"
+                    filterVehiclesByType(currentFilterType)
                 }
             }
         }
     }
 
     private fun filterVehiclesByType(type: String?) {
+        currentFilterType = type ?: "All"
         lifecycleScope.launch {
             val vehicles = withContext(Dispatchers.IO) {
-                if (type == null || type == "All") {
-                    vehicleDao.getAllVehicles()
+                if (showingMyListings) {
+                    if (type == null || type == "All") {
+                        vehicleDao.getVehiclesBySeller(currentUserId)
+                    } else {
+                        vehicleDao.getVehiclesBySellerAndType(currentUserId, type)
+                    }
                 } else {
-                    vehicleDao.getVehiclesByType(type)
+                    if (type == null || type == "All") {
+                        vehicleDao.getVehiclesFromOtherSellers(currentUserId)
+                    } else {
+                        vehicleDao.getVehiclesFromOtherSellersByType(currentUserId, type)
+                    }
                 }
             }
             withContext(Dispatchers.Main) {
                 vehicleAdapter.updateVehicles(vehicles)
+                loadSavedStatesForVehicles(vehicles)
             }
         }
     }
 
     private suspend fun loadAllVehicles() {
         val vehicles = withContext(Dispatchers.IO) {
-            vehicleDao.getAllVehicles()
+            if (currentUserId != -1) {
+                vehicleDao.getVehiclesFromOtherSellers(currentUserId)
+            } else {
+                vehicleDao.getAllVehicles()
+            }
         }
 
         withContext(Dispatchers.Main) {
             vehicleAdapter.updateVehicles(vehicles)
+            loadSavedStatesForVehicles(vehicles)
+        }
+    }
+
+    private suspend fun loadMyListings() {
+        val vehicles = withContext(Dispatchers.IO) {
+            if (currentUserId != -1) {
+                vehicleDao.getVehiclesBySeller(currentUserId)
+            } else {
+                emptyList()
+            }
+        }
+
+        withContext(Dispatchers.Main) {
+            vehicleAdapter.updateVehicles(vehicles)
+            loadSavedStatesForVehicles(vehicles)
+        }
+    }
+
+    private suspend fun loadSavedStatesForVehicles(vehicles: List<Vehicle>) {
+        if (currentUserId == -1) return
+
+        for (vehicle in vehicles) {
+            val isSaved = userSavedVehicleDao.isVehicleSaved(currentUserId, vehicle.id)
+            vehicleAdapter.setSavedState(vehicle.id, isSaved)
         }
     }
 }

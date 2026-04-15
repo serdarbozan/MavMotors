@@ -6,12 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Vehicle::class],
-    version = 1,
+    entities = [Vehicle::class, User::class, UserSavedVehicle::class],
+    version = 3,  // Increment version!
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun vehicleDao(): VehicleDao
+    abstract fun userDao(): UserDao
+    abstract fun userSavedVehicleDao(): UserSavedVehicleDao  // NEW
 
     companion object {
         @Volatile
@@ -23,7 +25,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "mav_motors_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

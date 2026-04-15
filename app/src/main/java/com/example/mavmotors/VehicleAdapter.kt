@@ -1,5 +1,6 @@
 package com.example.mavmotors
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,8 @@ import com.bumptech.glide.Glide
 import java.io.File
 
 class VehicleAdapter(
-    private var vehicles: List<Vehicle>
+    private var vehicles: List<Vehicle>,
+    private val onHeartClick: ((Vehicle, Boolean) -> Unit)? = null
 ) : RecyclerView.Adapter<VehicleAdapter.VehicleViewHolder>() {
 
     private val favoriteStates = mutableMapOf<Int, Boolean>()
@@ -36,7 +38,6 @@ class VehicleAdapter(
         val vehicle = vehicles[position]
         val context = holder.itemView.context
 
-        // Check if dark mode is active
         val isDarkMode = ThemeManager.isDarkMode(context)
 
         // Load image from local path
@@ -62,27 +63,52 @@ class VehicleAdapter(
         holder.mileageTextView.text = "${vehicle.mileage} miles"
         holder.yearTextView.text = vehicle.year.toString()
 
-        // Apply theme-aware colors
+        // Apply theme-aware text colors
         if (isDarkMode) {
-            // DARK MODE COLORS
             holder.typeTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle_dark))
             holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice_dark))
             holder.mileageTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))
             holder.yearTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))
         } else {
-            // LIGHT MODE COLORS
             holder.typeTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle))
             holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice))
             holder.mileageTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails))
             holder.yearTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails))
         }
 
-        // Heart checkbox
+        // Heart checkbox - Force correct colors
         holder.heartCheckBox.buttonTintList = null
         holder.heartCheckBox.setOnCheckedChangeListener(null)
-        holder.heartCheckBox.isChecked = favoriteStates[position] ?: false
-        holder.heartCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            favoriteStates[position] = isChecked
+
+        val isChecked = favoriteStates[vehicle.id] ?: false
+        holder.heartCheckBox.isChecked = isChecked
+
+        // Set the correct heart color based on checked state
+        if (isChecked) {
+            holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(context, R.color.main_orange)
+            )
+        } else {
+            holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(context, R.color.heart_inactive)
+            )
+        }
+
+        holder.heartCheckBox.setOnCheckedChangeListener { _, checked ->
+            if (checked != favoriteStates[vehicle.id]) {
+                favoriteStates[vehicle.id] = checked
+                // Update tint immediately when clicked
+                if (checked) {
+                    holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(context, R.color.main_orange)
+                    )
+                } else {
+                    holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(context, R.color.heart_inactive)
+                    )
+                }
+                onHeartClick?.invoke(vehicle, checked)
+            }
         }
     }
 
@@ -92,5 +118,13 @@ class VehicleAdapter(
         vehicles = newVehicles
         favoriteStates.clear()
         notifyDataSetChanged()
+    }
+
+    fun setSavedState(vehicleId: Int, isSaved: Boolean) {
+        favoriteStates[vehicleId] = isSaved
+        val position = vehicles.indexOfFirst { it.id == vehicleId }
+        if (position != -1) {
+            notifyItemChanged(position)
+        }
     }
 }

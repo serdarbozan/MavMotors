@@ -5,13 +5,14 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "vehicles")
 data class Vehicle(
-    @PrimaryKey(autoGenerate = true) val vehicleId: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val type: String,
     val price: Double,
     val mileage: Int,
+    val year: Int,
     val postedDate: Long,
     val status: String,
-    val year: Int,
     val imagePath: String = "",
-    val isActive: Boolean = true
+    val sellerId: Int = 0  // NEW: ID of the user who created this listing
 )

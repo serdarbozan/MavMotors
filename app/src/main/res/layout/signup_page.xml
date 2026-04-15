@@ -59,7 +59,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/emailInput"
         android:layout_width="320dp"
         android:layout_height="48dp"
         android:layout_marginStart="45dp"
@@ -89,10 +89,10 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/emailInput" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/usernameInput"
         android:layout_width="320dp"
         android:layout_height="48dp"
         android:layout_marginStart="45dp"
@@ -122,10 +122,10 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameInput" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/passwordInput"
         android:layout_width="320dp"
         android:layout_height="48dp"
         android:layout_marginStart="45dp"
@@ -155,10 +155,10 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/confirmInput"
         android:layout_width="320dp"
         android:layout_height="48dp"
         android:layout_marginStart="45dp"
@@ -176,7 +176,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button"
+        android:id="@+id/signUpBtn"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginTop="50dp"
@@ -189,7 +189,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText4" />
+        app:layout_constraintTop_toBottomOf="@+id/confirmInput" />
 
     <LinearLayout
         android:id="@+id/linkText"
@@ -200,9 +200,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button">
+        app:layout_constraintTop_toBottomOf="@id/signUpBtn">
 
         <TextView
+            android:id="@+id/loginBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_variable_font"

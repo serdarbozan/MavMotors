@@ -7,9 +7,10 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val username: String,
     val email: String,
-    val password: String, // In production, store hashed passwords!
-    val darkMode: Boolean = true, // Default to dark mode
-    val createdAt: Long = System.currentTimeMillis()
+    val username: String,
+    val password: String,
+    val darkMode: Boolean = true,
+    val createdAt: Long = System.currentTimeMillis(),
+    val avatarPath: String = ""  // NEW FIELD
 )
