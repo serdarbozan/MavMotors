@@ -8,16 +8,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import androidx.core.content.edit
 
-class LogInPage : AppCompatActivity() {
-
+class LogInPage : AppCompatActivity()
+{
     private lateinit var userDao: UserDao
     private lateinit var sharedPrefs: android.content.SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.login_page)
@@ -31,22 +32,12 @@ class LogInPage : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val tvGoToSignUp = findViewById<TextView>(R.id.tvGoToSignUp)
 
-        // Check if user is already logged in
-        val savedUserId = sharedPrefs.getInt("logged_in_user_id", -1)
-        if (savedUserId != -1) {
-            lifecycleScope.launch {
-                val user = userDao.getUserById(savedUserId)
-                if (user != null) {
-                    navigateToLandingPage(user)
-                }
-            }
-        }
-
         btnLogin.setOnClickListener {
             val enteredEmail = etEmail.text.toString().trim()
             val enteredPassword = etPassword.text.toString().trim()
 
-            if (enteredEmail.isEmpty() || enteredPassword.isEmpty()) {
+            if (enteredEmail.isEmpty() || enteredPassword.isEmpty())
+            {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -54,13 +45,17 @@ class LogInPage : AppCompatActivity() {
             lifecycleScope.launch {
                 val user = userDao.login(enteredEmail, enteredPassword)
 
-                if (user != null) {
-                    // Save login state
-                    sharedPrefs.edit { putInt("logged_in_user_id", user.id) }
+                if (user != null)
+                {
+                    sharedPrefs.edit {
+                        putInt("logged_in_user_id", user.id)
+                    }
 
                     Toast.makeText(this@LogInPage, "Login successful", Toast.LENGTH_SHORT).show()
                     navigateToLandingPage(user)
-                } else {
+                }
+                else
+                {
                     Toast.makeText(this@LogInPage, "Invalid email or password", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -71,7 +66,8 @@ class LogInPage : AppCompatActivity() {
         }
     }
 
-    private fun navigateToLandingPage(user: User) {
+    private fun navigateToLandingPage(user: User)
+    {
         val intent = Intent(this, LandingPage::class.java)
         intent.putExtra("USERNAME", user.username)
         intent.putExtra("USER_ID", user.id)
