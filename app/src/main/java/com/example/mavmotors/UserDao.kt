@@ -37,4 +37,19 @@ interface UserDao {
 
     @Query("SELECT * FROM vehicles WHERE sellerId != :userId ORDER BY postedDate DESC")
     suspend fun getVehiclesFromOtherSellers(userId: Int): List<Vehicle>
+
+    @Query("SELECT * FROM users ORDER BY createdAt DESC")
+    suspend fun getAllUsers(): List<User>
+
+    @Query("UPDATE users SET status = 'SUSPENDED' WHERE id = :userId")
+    suspend fun suspendUser(userId: Int)
+
+    @Query("UPDATE users SET status = 'ACTIVE' WHERE id = :userId")
+    suspend fun activateUser(userId: Int)
+
+    @Query("DELETE FROM users WHERE id = :userId")
+    suspend fun deleteUserById(userId: Int)
+
+    @Query("UPDATE users SET role = :role WHERE id = :userId")
+    suspend fun updateUserRole(userId: Int, role: String)
 }

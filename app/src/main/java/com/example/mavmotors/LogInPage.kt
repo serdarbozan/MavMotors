@@ -12,13 +12,12 @@ import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
-class LogInPage : AppCompatActivity()
-{
+class LogInPage : AppCompatActivity() {
+
     private lateinit var userDao: UserDao
     private lateinit var sharedPrefs: android.content.SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.login_page)
@@ -36,8 +35,7 @@ class LogInPage : AppCompatActivity()
             val enteredEmail = etEmail.text.toString().trim()
             val enteredPassword = etPassword.text.toString().trim()
 
-            if (enteredEmail.isEmpty() || enteredPassword.isEmpty())
-            {
+            if (enteredEmail.isEmpty() || enteredPassword.isEmpty()) {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -45,18 +43,28 @@ class LogInPage : AppCompatActivity()
             lifecycleScope.launch {
                 val user = userDao.login(enteredEmail, enteredPassword)
 
-                if (user != null)
-                {
-                    sharedPrefs.edit {
-                        putInt("logged_in_user_id", user.id)
+                when {
+                    user == null -> {
+                        Toast.makeText(this@LogInPage, "Invalid email or password", Toast.LENGTH_SHORT).show()
                     }
-
-                    Toast.makeText(this@LogInPage, "Login successful", Toast.LENGTH_SHORT).show()
-                    navigateToLandingPage(user)
-                }
-                else
-                {
-                    Toast.makeText(this@LogInPage, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                    user.status == UserStatus.SUSPENDED -> {
+                        Toast.makeText(
+                            this@LogInPage,
+                            "Your account has been suspended. Please contact support.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    else -> {
+                        sharedPrefs.edit {
+                            putInt("logged_in_user_id", user.id)
+                        }
+                        Toast.makeText(this@LogInPage, "Login successful", Toast.LENGTH_SHORT).show()
+                        if (user.role == UserRole.ADMIN) {
+                            navigateToAdminPanel()
+                        } else {
+                            navigateToLandingPage(user)
+                        }
+                    }
                 }
             }
         }
@@ -66,11 +74,16 @@ class LogInPage : AppCompatActivity()
         }
     }
 
-    private fun navigateToLandingPage(user: User)
-    {
+    private fun navigateToLandingPage(user: User) {
         val intent = Intent(this, LandingPage::class.java)
         intent.putExtra("USERNAME", user.username)
         intent.putExtra("USER_ID", user.id)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToAdminPanel() {
+        val intent = Intent(this, AdminPanelActivity::class.java)
         startActivity(intent)
         finish()
     }
