@@ -12,5 +12,5 @@ data class User(
     val password: String,
     val darkMode: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
-    val avatarPath: String = ""  // NEW FIELD
+    val avatarPath: String = ""
 )

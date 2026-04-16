@@ -16,6 +16,7 @@ class SignUpPage : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeManager.applyTheme(this)
         setContentView(R.layout.signup_page)
 
         val db = DatabaseProvider.getDatabase(this)
@@ -26,7 +27,7 @@ class SignUpPage : AppCompatActivity() {
         val passwordField = findViewById<EditText>(R.id.passwordInput)
         val confirmPasswordField = findViewById<EditText>(R.id.confirmInput)
         val signUpButton = findViewById<MaterialButton>(R.id.signUpBtn)
-        val loginLink = findViewById<TextView>(R.id.loginBtn)
+        val loginLink = findViewById<TextView>(R.id.gotoLogIn)
 
         signUpButton.setOnClickListener {
             val email = emailField.text.toString().trim()

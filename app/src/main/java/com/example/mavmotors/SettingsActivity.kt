@@ -36,6 +36,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var logoutButton: TextView
 
     private var selectedAvatarUri: Uri? = null
+    private var tempDarkMode: Boolean = true
 
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -62,7 +63,6 @@ class SettingsActivity : AppCompatActivity() {
         val db = DatabaseProvider.getDatabase(this)
         userDao = db.userDao()
 
-        // Initialize views
         avatarImage = findViewById(R.id.avatarImage)
         usernameEditText = findViewById(R.id.usernameEditText)
         emailTextView = findViewById(R.id.emailTextView)
@@ -78,9 +78,10 @@ class SettingsActivity : AppCompatActivity() {
 
             emailTextView.text = currentUser.email
             usernameEditText.setText(currentUser.username)
-            darkModeSwitch.isChecked = ThemeManager.isDarkMode(this@SettingsActivity)
 
-            // Load avatar if exists
+            tempDarkMode = ThemeManager.isDarkMode(this@SettingsActivity)
+            darkModeSwitch.isChecked = tempDarkMode
+
             if (currentUser.avatarPath.isNotEmpty()) {
                 val avatarFile = File(currentUser.avatarPath)
                 if (avatarFile.exists()) {
@@ -93,22 +94,14 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        // Avatar click
         avatarImage.setOnClickListener {
             openGallery()
         }
 
-        // Dark mode toggle
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            ThemeManager.saveThemePreference(this, isChecked)
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+            tempDarkMode = isChecked
         }
 
-        // Save profile
         saveProfileButton.setOnClickListener {
             val newUsername = usernameEditText.text.toString().trim()
             if (newUsername.isEmpty()) {
@@ -117,7 +110,6 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             lifecycleScope.launch {
-                // Save avatar if changed
                 var avatarPath = currentUser.avatarPath
                 if (selectedAvatarUri != null) {
                     avatarPath = saveAvatarToInternalStorage(selectedAvatarUri)
@@ -126,26 +118,33 @@ class SettingsActivity : AppCompatActivity() {
                 val updatedUser = currentUser.copy(
                     username = newUsername,
                     avatarPath = avatarPath,
-                    darkMode = darkModeSwitch.isChecked
+                    darkMode = tempDarkMode
                 )
 
                 userDao.updateUser(updatedUser)
+
+                val currentTheme = ThemeManager.isDarkMode(this@SettingsActivity)
+                if (tempDarkMode != currentTheme) {
+                    ThemeManager.saveThemePreference(this@SettingsActivity, tempDarkMode)
+                    if (tempDarkMode) {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    } else {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                }
+
                 Toast.makeText(this@SettingsActivity, "Profile updated!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
 
-        // My Listings
+        // FIXED: My Listings - opens MyListingsActivity
         myListingsButton.setOnClickListener {
-            val intent = Intent(this, LandingPage::class.java)
-            intent.putExtra("SHOW_MY_LISTINGS", true)
-            intent.putExtra("USERNAME", currentUser.username)
-            intent.putExtra("USER_ID", currentUser.id)
+            val intent = Intent(this, MyListingsActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
-        // Saved Vehicles
+        // FIXED: Saved Vehicles - opens SavedVehiclesActivity
         savedVehiclesButton.setOnClickListener {
             val intent = Intent(this, SavedVehiclesActivity::class.java)
             startActivity(intent)
@@ -160,7 +159,6 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        // Back button
         backButton.setOnClickListener {
             finish()
         }

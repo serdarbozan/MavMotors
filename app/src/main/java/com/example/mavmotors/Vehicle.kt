@@ -14,5 +14,9 @@ data class Vehicle(
     val postedDate: Long,
     val status: String,
     val imagePath: String = "",
-    val sellerId: Int = 0  // NEW: ID of the user who created this listing
+    val sellerId: Int = 0,
+    val description: String = "",           // NEW
+    val transmission: String = "Automatic", // NEW
+    val fuelType: String = "Gasoline",      // NEW
+    val color: String = "Black"             // NEW
 )

@@ -23,6 +23,9 @@ interface VehicleDao {
     @Query("SELECT * FROM vehicles ORDER BY postedDate DESC")
     suspend fun getAllVehicles(): List<Vehicle>
 
+    @Query("SELECT * FROM vehicles WHERE id = :id")
+    suspend fun getVehicleById(id: Int): Vehicle?
+
     @Query("""
         SELECT type
         FROM vehicles
@@ -35,8 +38,6 @@ interface VehicleDao {
     @Query("SELECT * FROM vehicles WHERE type = :type ORDER BY postedDate DESC")
     suspend fun getVehiclesByType(type: String): List<Vehicle>
 
-    // MISSING QUERIES - ADD THESE:
-
     @Query("SELECT * FROM vehicles WHERE sellerId = :userId ORDER BY postedDate DESC")
     suspend fun getVehiclesBySeller(userId: Int): List<Vehicle>
 
@@ -48,4 +49,14 @@ interface VehicleDao {
 
     @Query("SELECT * FROM vehicles WHERE sellerId != :userId AND type = :type ORDER BY postedDate DESC")
     suspend fun getVehiclesFromOtherSellersByType(userId: Int, type: String): List<Vehicle>
+
+    // Search query
+    @Query("""
+        SELECT * FROM vehicles 
+        WHERE type LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%'
+        OR CAST(year AS TEXT) LIKE '%' || :query || '%'
+        ORDER BY postedDate DESC
+    """)
+    suspend fun searchVehicles(query: String): List<Vehicle>
 }

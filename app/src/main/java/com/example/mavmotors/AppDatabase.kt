@@ -6,14 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Vehicle::class, User::class, UserSavedVehicle::class],
-    version = 3,  // Increment version!
+    entities = [Vehicle::class, User::class, UserSavedVehicle::class, CartItem::class],
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun vehicleDao(): VehicleDao
     abstract fun userDao(): UserDao
-    abstract fun userSavedVehicleDao(): UserSavedVehicleDao  // NEW
+    abstract fun userSavedVehicleDao(): UserSavedVehicleDao
+    abstract fun cartDao(): CartDao
 
     companion object {
         @Volatile

@@ -110,6 +110,11 @@ class VehicleAdapter(
                 onHeartClick?.invoke(vehicle, checked)
             }
         }
+        holder.itemView.setOnClickListener {
+            val intent = android.content.Intent(context, VehicleDetailActivity::class.java)
+            intent.putExtra("VEHICLE_ID", vehicle.id)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = vehicles.size

@@ -7,4 +7,12 @@
     <string name="profile_settings"><![CDATA[Profile & Settings]]></string>
     <string name="update_avatar">update avatar</string>
     <string name="edit_username">edit username</string>
+    <string name="remove_button">remove button</string>
+    <string name="profile_avatar">profile avatar</string>
+    <string name="input_price">input price</string>
+    <string name="vehicle_image">vehicle image</string>
+    <string name="input_year">input year</string>
+    <string name="input_type">input type</string>
+    <string name="delete_button">delete button</string>
+    <string name="edit_button">edit button</string>
 </resources>

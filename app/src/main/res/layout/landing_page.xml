@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground">
@@ -13,48 +12,45 @@
         android:background="?attr/colorPrimaryVariant"
         android:orientation="horizontal"
         android:paddingStart="20dp"
-        android:paddingEnd="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/welcomeText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Welcome Back"
-                android:textColor="@color/small_text" />
+                android:textColor="@color/small_text"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/usernameDisplay"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/username"
+                android:text="User"
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
         <ImageView
-            android:id="@+id/menuBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/menu" />
+            android:id="@+id/profileAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/default_avatar"
+            android:scaleType="centerCrop"
+            android:background="@drawable/avatar_circle_bg"
+            android:clickable="true"
+            android:contentDescription="@string/profile_avatar"
+            android:focusable="true" />
 
     </LinearLayout>
 
@@ -63,19 +59,16 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/white_bg_round_corner"
         android:drawableEnd="@drawable/magnify"
-        android:ems="10"
-        android:hint="Search for Vehicle"
+        android:hint="Search vehicles..."
         android:inputType="text"
+        android:imeOptions="actionSearch"
         android:paddingStart="20dp"
         android:paddingEnd="15dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topHeader" />
 
     <HorizontalScrollView
@@ -83,8 +76,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchInput">
 
         <com.google.android.material.chip.ChipGroup
@@ -106,11 +97,9 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chipScrollView" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/addBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -131,76 +120,70 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="?attr/colorPrimaryVariant"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp">
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
 
             <TextView
                 android:id="@+id/homeBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/home"
                 android:gravity="center"
                 android:text="Home"
                 android:textColor="?attr/colorOnPrimary"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/savedBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/white_heart_outline"
                 android:gravity="center"
                 android:text="Saved"
                 android:textColor="?attr/colorOnPrimary"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/sellTxt"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Sell"
                 android:textColor="?attr/colorOnPrimary"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/cartBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/cart_outline"
                 android:gravity="center"
                 android:text="Cart"
                 android:textColor="?attr/colorOnPrimary"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/logoutBtn"
-                android:layout_width="wrap_content"
+                android:id="@+id/ordersBtn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/logout"
+                android:drawableTop="@drawable/shopping_outline"
                 android:gravity="center"
-                android:text="Logout"
+                android:text="Orders"
                 android:textColor="?attr/colorOnPrimary"
-                android:textStyle="bold" />
+                android:textSize="12sp" />
+
         </LinearLayout>
 
     </FrameLayout>
