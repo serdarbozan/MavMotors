@@ -99,16 +99,17 @@
                     android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/typeInput"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/white_bg_round_corner"
-                    android:hint="e.g., SUV, Sedan, Truck"
+                    android:hint="Select vehicle type"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -128,7 +129,8 @@
                     android:inputType="number"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -148,7 +150,8 @@
                     android:inputType="numberDecimal"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -168,7 +171,92 @@
                     android:inputType="number"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Transmission"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/transmissionInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:hint="Select transmission"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="Automatic"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Fuel Type"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fuelTypeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:hint="Select fuel type"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="Gasoline"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Color"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/colorInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:hint="e.g., Black"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="Black"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Description"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/descriptionInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:gravity="top"
+                    android:hint="Enter description (optional)"
+                    android:inputType="textMultiLine"
+                    android:padding="12dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint" />
 
             </LinearLayout>
 
@@ -179,6 +267,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/formCard">
 

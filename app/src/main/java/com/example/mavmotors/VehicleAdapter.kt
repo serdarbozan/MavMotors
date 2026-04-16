@@ -40,8 +40,26 @@ class VehicleAdapter(
 
         val isDarkMode = ThemeManager.isDarkMode(context)
 
-        // Load image from local path
-        if (vehicle.imagePath.isNotEmpty()) {
+        // Load image - check if it's a sample resource or file path
+        if (vehicle.isSampleImage && vehicle.imagePath.isNotEmpty()) {
+            // Load from drawable resource
+            val resourceId = context.resources.getIdentifier(
+                vehicle.imagePath,
+                "drawable",
+                context.packageName
+            )
+            if (resourceId != 0) {
+                Glide.with(context)
+                    .load(resourceId)
+                    .placeholder(R.drawable.placeholder_car)
+                    .error(R.drawable.placeholder_car)
+                    .centerCrop()
+                    .into(holder.vehicleImage)
+            } else {
+                holder.vehicleImage.setImageResource(R.drawable.placeholder_car)
+            }
+        } else if (vehicle.imagePath.isNotEmpty()) {
+            // Load from file path (user-added images)
             val imageFile = File(vehicle.imagePath)
             if (imageFile.exists()) {
                 Glide.with(context)
@@ -110,6 +128,7 @@ class VehicleAdapter(
                 onHeartClick?.invoke(vehicle, checked)
             }
         }
+
         holder.itemView.setOnClickListener {
             val intent = android.content.Intent(context, VehicleDetailActivity::class.java)
             intent.putExtra("VEHICLE_ID", vehicle.id)

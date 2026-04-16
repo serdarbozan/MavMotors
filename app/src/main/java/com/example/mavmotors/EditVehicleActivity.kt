@@ -63,7 +63,6 @@ class EditVehicleActivity : AppCompatActivity() {
         val db = DatabaseProvider.getDatabase(this)
         vehicleDao = db.vehicleDao()
 
-        // Initialize views
         vehicleImage = findViewById(R.id.editVehicleImage)
         typeInput = findViewById(R.id.editTypeInput)
         priceInput = findViewById(R.id.editPriceInput)
@@ -169,6 +168,12 @@ class EditVehicleActivity : AppCompatActivity() {
 
                 vehicleDao.updateVehicle(updatedVehicle)
                 Toast.makeText(this@EditVehicleActivity, "Listing updated!", Toast.LENGTH_SHORT).show()
+
+                // Return to VehicleDetailActivity and refresh
+                val intent = Intent(this@EditVehicleActivity, VehicleDetailActivity::class.java)
+                intent.putExtra("VEHICLE_ID", vehicleId)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent)
                 finish()
             }
         }

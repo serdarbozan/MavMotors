@@ -26,15 +26,6 @@ interface VehicleDao {
     @Query("SELECT * FROM vehicles WHERE id = :id")
     suspend fun getVehicleById(id: Int): Vehicle?
 
-    @Query("""
-        SELECT type
-        FROM vehicles
-        GROUP BY type
-        ORDER BY COUNT(id) DESC
-        LIMIT 3
-    """)
-    suspend fun getTopVehicleTypes(): List<String>
-
     @Query("SELECT * FROM vehicles WHERE type = :type ORDER BY postedDate DESC")
     suspend fun getVehiclesByType(type: String): List<Vehicle>
 
@@ -59,4 +50,13 @@ interface VehicleDao {
         ORDER BY postedDate DESC
     """)
     suspend fun searchVehicles(query: String): List<Vehicle>
+
+    @Query("""
+    SELECT type
+    FROM vehicles
+    GROUP BY type
+    ORDER BY COUNT(id) DESC
+    LIMIT 5
+""")
+    suspend fun getTopVehicleTypes(): List<String>
 }

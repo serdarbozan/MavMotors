@@ -47,6 +47,14 @@ class VehicleDetailActivity : AppCompatActivity() {
         loadVehicleDetails()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Reload vehicle data when returning from edit
+        if (vehicleId != -1) {
+            loadVehicleDetails()
+        }
+    }
+
     private fun loadVehicleDetails() {
         lifecycleScope.launch {
             currentVehicle = vehicleDao.getVehicleById(vehicleId)
@@ -59,7 +67,22 @@ class VehicleDetailActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.detailFuelType).text = vehicle.fuelType
                 findViewById<TextView>(R.id.detailColor).text = vehicle.color
 
-                if (vehicle.imagePath.isNotEmpty()) {
+                // Load image - check if it's a sample resource or file path
+                if (vehicle.isSampleImage && vehicle.imagePath.isNotEmpty()) {
+                    val resourceId = resources.getIdentifier(
+                        vehicle.imagePath,
+                        "drawable",
+                        packageName
+                    )
+                    if (resourceId != 0) {
+                        Glide.with(this@VehicleDetailActivity)
+                            .load(resourceId)
+                            .placeholder(R.drawable.placeholder_car)
+                            .error(R.drawable.placeholder_car)
+                            .centerCrop()
+                            .into(findViewById<ImageView>(R.id.detailImage))
+                    }
+                } else if (vehicle.imagePath.isNotEmpty()) {
                     val imageFile = File(vehicle.imagePath)
                     if (imageFile.exists()) {
                         Glide.with(this@VehicleDetailActivity)

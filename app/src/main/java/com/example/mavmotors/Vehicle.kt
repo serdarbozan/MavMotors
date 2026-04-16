@@ -15,8 +15,9 @@ data class Vehicle(
     val status: String,
     val imagePath: String = "",
     val sellerId: Int = 0,
-    val description: String = "",           // NEW
-    val transmission: String = "Automatic", // NEW
-    val fuelType: String = "Gasoline",      // NEW
-    val color: String = "Black"             // NEW
+    val description: String = "",
+    val transmission: String = "Automatic",
+    val fuelType: String = "Gasoline",
+    val color: String = "Black",
+    val isSampleImage: Boolean = false  // NEW: Flag to identify sample images
 )

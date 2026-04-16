@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import android.widget.Spinner
+import android.widget.Toast
 
 class LandingPage : AppCompatActivity() {
     private lateinit var vehicleDao: VehicleDao
@@ -36,31 +38,24 @@ class LandingPage : AppCompatActivity() {
     private var currentUser: User? = null
     private var showingMyListings: Boolean = false
     private var currentFilterType: String = "All"
-
     private var currentSort = "none"
 
     private val filterLauncher =
-        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-
                 val data = result.data
-
                 val maxPrice = data?.getIntExtra("MAX_PRICE", Int.MAX_VALUE) ?: Int.MAX_VALUE
                 val maxYear = data?.getIntExtra("MAX_YEAR", Int.MAX_VALUE) ?: Int.MAX_VALUE
-
                 applyFilters(maxPrice, maxYear)
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
         ThemeManager.applyTheme(this)
         setContentView(R.layout.landing_page)
 
         val sortSpinner = findViewById<Spinner>(R.id.sortSpinner)
-
         val sortOptions = arrayOf(
             "Sort/Filter    ",
             "Price: Low → High",
@@ -87,25 +82,17 @@ class LandingPage : AppCompatActivity() {
                 id: Long
             ) {
                 when (position) {
-
-                    0 -> {
-                        currentSort = "none"
-                    }
-
+                    0 -> { currentSort = "none" }
                     1 -> currentSort = "price_low"
                     2 -> currentSort = "price_high"
                     3 -> currentSort = "year_new"
                     4 -> currentSort = "mileage_low"
-
                     5 -> {
-                        // OPEN FILTER UI
                         showFilterBottomSheet()
-                        sortSpinner.setSelection(0) // reset back
+                        sortSpinner.setSelection(0)
                         return
                     }
                 }
-
-
                 filterVehiclesByType(currentFilterType)
             }
 
@@ -125,7 +112,6 @@ class LandingPage : AppCompatActivity() {
             updateUsernameDisplay()
             loadUserAvatar()
         }
-
 
         val showMyListings = intent.getBooleanExtra("SHOW_MY_LISTINGS", false)
 
@@ -199,6 +185,7 @@ class LandingPage : AppCompatActivity() {
         findViewById<TextView>(R.id.homeBtn).setOnClickListener {
             showingMyListings = false
             currentFilterType = "All"
+            currentSort = "none"
             lifecycleScope.launch {
                 loadTopVehicleTypes()
                 loadAllVehicles()
@@ -242,8 +229,10 @@ class LandingPage : AppCompatActivity() {
             if (currentUserId != -1) {
                 if (isSaved) {
                     userSavedVehicleDao.saveVehicle(UserSavedVehicle(currentUserId, vehicle.id))
+                    Toast.makeText(this@LandingPage, "Saved to favorites", Toast.LENGTH_SHORT).show()
                 } else {
                     userSavedVehicleDao.unsaveVehicle(currentUserId, vehicle.id)
+                    Toast.makeText(this@LandingPage, "Removed from favorites", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -254,10 +243,24 @@ class LandingPage : AppCompatActivity() {
             listOf(
                 Vehicle(type = "SUV", price = 32500.0, mileage = 15000, year = 2023,
                     postedDate = System.currentTimeMillis(), status = "Available",
-                    description = "Spacious family SUV with leather seats", sellerId = 0),
+                    description = "Spacious family SUV with leather seats", sellerId = 0,
+                    transmission = "Automatic", fuelType = "Gasoline", color = "Black",
+                    imagePath = "black_suv", isSampleImage = true),
                 Vehicle(type = "Sedan", price = 28000.0, mileage = 22000, year = 2022,
                     postedDate = System.currentTimeMillis(), status = "Available",
-                    description = "Fuel-efficient sedan, perfect for commuting", sellerId = 0)
+                    description = "Fuel-efficient sedan, perfect for commuting", sellerId = 0,
+                    transmission = "Automatic", fuelType = "Gasoline", color = "White",
+                    imagePath = "white_sedan", isSampleImage = true),
+                Vehicle(type = "Truck", price = 35000.0, mileage = 18000, year = 2023,
+                    postedDate = System.currentTimeMillis(), status = "Available",
+                    description = "Heavy-duty truck with towing package", sellerId = 0,
+                    transmission = "Automatic", fuelType = "Diesel", color = "Red",
+                    imagePath = "red_truck", isSampleImage = true),
+                Vehicle(type = "Coupe", price = 42000.0, mileage = 8000, year = 2024,
+                    postedDate = System.currentTimeMillis(), status = "Available",
+                    description = "Sporty coupe with premium sound system", sellerId = 0,
+                    transmission = "Manual", fuelType = "Gasoline", color = "Blue",
+                    imagePath = "blue_coupe", isSampleImage = true)
             ).forEach { vehicleDao.insertVehicle(it) }
         }
     }
@@ -315,8 +318,9 @@ class LandingPage : AppCompatActivity() {
                     if (type == null || type == "All") vehicleDao.getVehiclesBySeller(currentUserId)
                     else vehicleDao.getVehiclesBySellerAndType(currentUserId, type)
                 } else {
-                    if (type == null || type == "All") vehicleDao.getVehiclesFromOtherSellers(currentUserId)
-                    else vehicleDao.getVehiclesFromOtherSellersByType(currentUserId, type)
+                    // Show ALL vehicles including user's own
+                    if (type == null || type == "All") vehicleDao.getAllVehicles()
+                    else vehicleDao.getVehiclesByType(type)
                 }
             }
             withContext(Dispatchers.Main) {
@@ -329,12 +333,13 @@ class LandingPage : AppCompatActivity() {
 
     private suspend fun loadAllVehicles() {
         val vehicles = withContext(Dispatchers.IO) {
-            if (currentUserId != -1) vehicleDao.getVehiclesFromOtherSellers(currentUserId)
-            else vehicleDao.getAllVehicles()
+            // Show ALL vehicles including user's own
+            vehicleDao.getAllVehicles()
         }
         withContext(Dispatchers.Main) {
-            vehicleAdapter.updateVehicles(vehicles)
-            loadSavedStatesForVehicles(vehicles)
+            val sortedList = sortVehicles(vehicles)
+            vehicleAdapter.updateVehicles(sortedList)
+            loadSavedStatesForVehicles(sortedList)
         }
     }
 
@@ -344,25 +349,23 @@ class LandingPage : AppCompatActivity() {
             else emptyList()
         }
         withContext(Dispatchers.Main) {
-            vehicleAdapter.updateVehicles(vehicles)
-            loadSavedStatesForVehicles(vehicles)
+            val sortedList = sortVehicles(vehicles)
+            vehicleAdapter.updateVehicles(sortedList)
+            loadSavedStatesForVehicles(sortedList)
         }
     }
 
     private suspend fun searchVehicles(query: String) {
         val vehicles = withContext(Dispatchers.IO) {
-            val allResults = vehicleDao.searchVehicles(query)
-            if (showingMyListings) {
-                allResults.filter { it.sellerId == currentUserId }
-            } else {
-                allResults.filter { it.sellerId != currentUserId || it.sellerId == 0 }
-            }
+            vehicleDao.searchVehicles(query)
         }
         withContext(Dispatchers.Main) {
-            vehicleAdapter.updateVehicles(vehicles)
-            loadSavedStatesForVehicles(vehicles)
+            val sortedList = sortVehicles(vehicles)
+            vehicleAdapter.updateVehicles(sortedList)
+            loadSavedStatesForVehicles(sortedList)
         }
     }
+
     private fun showFilterBottomSheet() {
         val intent = Intent(this, FilterActivity::class.java)
         filterLauncher.launch(intent)
@@ -377,21 +380,21 @@ class LandingPage : AppCompatActivity() {
             else -> list
         }
     }
+
     private suspend fun loadSavedStatesForVehicles(vehicles: List<Vehicle>) {
         if (currentUserId == -1) return
         vehicles.forEach { vehicle ->
             vehicleAdapter.setSavedState(vehicle.id, userSavedVehicleDao.isVehicleSaved(currentUserId, vehicle.id))
         }
     }
-    private fun applyFilters(maxPrice: Int, maxYear: Int) {
 
+    private fun applyFilters(maxPrice: Int, maxYear: Int) {
         lifecycleScope.launch {
             val vehicles = withContext(Dispatchers.IO) {
                 vehicleDao.getAllVehicles().filter {
                     it.price <= maxPrice && it.year <= maxYear
                 }
             }
-
             withContext(Dispatchers.Main) {
                 val sorted = sortVehicles(vehicles)
                 vehicleAdapter.updateVehicles(sorted)
