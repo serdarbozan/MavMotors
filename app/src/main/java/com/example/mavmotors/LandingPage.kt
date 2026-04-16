@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import android.widget.Spinner
 
 class LandingPage : AppCompatActivity() {
     private lateinit var vehicleDao: VehicleDao
@@ -34,10 +37,80 @@ class LandingPage : AppCompatActivity() {
     private var showingMyListings: Boolean = false
     private var currentFilterType: String = "All"
 
+    private var currentSort = "none"
+
+    private val filterLauncher =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+
+                val data = result.data
+
+                val maxPrice = data?.getIntExtra("MAX_PRICE", Int.MAX_VALUE) ?: Int.MAX_VALUE
+                val maxYear = data?.getIntExtra("MAX_YEAR", Int.MAX_VALUE) ?: Int.MAX_VALUE
+
+                applyFilters(maxPrice, maxYear)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         ThemeManager.applyTheme(this)
         setContentView(R.layout.landing_page)
+
+        val sortSpinner = findViewById<Spinner>(R.id.sortSpinner)
+
+        val sortOptions = arrayOf(
+            "Sort/Filter    ",
+            "Price: Low → High",
+            "Price: High → Low",
+            "Year: Newest",
+            "Mileage: Low → High",
+            "More Filters..."
+        )
+
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.spinner_item,
+            sortOptions
+        )
+
+        adapter.setDropDownViewResource(R.layout.spinner_item)
+        sortSpinner.adapter = adapter
+
+        sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
+
+                    0 -> {
+                        currentSort = "none"
+                    }
+
+                    1 -> currentSort = "price_low"
+                    2 -> currentSort = "price_high"
+                    3 -> currentSort = "year_new"
+                    4 -> currentSort = "mileage_low"
+
+                    5 -> {
+                        // OPEN FILTER UI
+                        showFilterBottomSheet()
+                        sortSpinner.setSelection(0) // reset back
+                        return
+                    }
+                }
+
+
+                filterVehiclesByType(currentFilterType)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
         sharedPrefs = getSharedPreferences("MavMotorsPrefs", MODE_PRIVATE)
         currentUserId = sharedPrefs.getInt("logged_in_user_id", -1)
@@ -52,6 +125,7 @@ class LandingPage : AppCompatActivity() {
             updateUsernameDisplay()
             loadUserAvatar()
         }
+
 
         val showMyListings = intent.getBooleanExtra("SHOW_MY_LISTINGS", false)
 
@@ -246,8 +320,9 @@ class LandingPage : AppCompatActivity() {
                 }
             }
             withContext(Dispatchers.Main) {
-                vehicleAdapter.updateVehicles(vehicles)
-                loadSavedStatesForVehicles(vehicles)
+                val sortedList = sortVehicles(vehicles)
+                vehicleAdapter.updateVehicles(sortedList)
+                loadSavedStatesForVehicles(sortedList)
             }
         }
     }
@@ -288,11 +363,40 @@ class LandingPage : AppCompatActivity() {
             loadSavedStatesForVehicles(vehicles)
         }
     }
+    private fun showFilterBottomSheet() {
+        val intent = Intent(this, FilterActivity::class.java)
+        filterLauncher.launch(intent)
+    }
 
+    private fun sortVehicles(list: List<Vehicle>): List<Vehicle> {
+        return when (currentSort) {
+            "price_low" -> list.sortedBy { it.price }
+            "price_high" -> list.sortedByDescending { it.price }
+            "year_new" -> list.sortedByDescending { it.year }
+            "mileage_low" -> list.sortedBy { it.mileage }
+            else -> list
+        }
+    }
     private suspend fun loadSavedStatesForVehicles(vehicles: List<Vehicle>) {
         if (currentUserId == -1) return
         vehicles.forEach { vehicle ->
             vehicleAdapter.setSavedState(vehicle.id, userSavedVehicleDao.isVehicleSaved(currentUserId, vehicle.id))
+        }
+    }
+    private fun applyFilters(maxPrice: Int, maxYear: Int) {
+
+        lifecycleScope.launch {
+            val vehicles = withContext(Dispatchers.IO) {
+                vehicleDao.getAllVehicles().filter {
+                    it.price <= maxPrice && it.year <= maxYear
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                val sorted = sortVehicles(vehicles)
+                vehicleAdapter.updateVehicles(sorted)
+                loadSavedStatesForVehicles(sorted)
+            }
         }
     }
 }
