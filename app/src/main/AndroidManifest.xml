@@ -16,17 +16,15 @@
             android:name=".FilterActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpPage"
+            android:name=".LogInPage"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+
+            <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".LogInPage"
-            android:exported="false" />
         <activity
             android:name=".LandingPage"
             android:exported="false" />
@@ -54,6 +52,11 @@
         <activity
             android:name=".OrdersActivity"
             android:exported="false" />
+
+        <activity android:name=".AdminPanelActivity" android:exported="false" />
+        <activity android:name=".AdminUsersActivity" android:exported="false" />
+        <activity android:name=".AdminListingsActivity" android:exported="false" />
+        <activity android:name=".AdminLogsActivity" android:exported="false" />
     </application>
 
 </manifest>

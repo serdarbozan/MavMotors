@@ -5,30 +5,51 @@
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topHeader"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryVariant"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/welcomeText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:text="MAVMOTORS"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-condensed"
+            android:letterSpacing="0.2"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-            <TextView
-                android:id="@+id/welcomeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Welcome Back"
-                android:textColor="@color/small_text"
-                android:textSize="12sp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/profileAvatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/default_avatar"
+                android:scaleType="centerCrop"
+                android:background="@drawable/avatar_circle_bg"
+                android:clickable="true"
+                android:contentDescription="@string/profile_avatar"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/usernameDisplay"
@@ -36,23 +57,13 @@
                 android:layout_height="wrap_content"
                 android:text="User"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/profileAvatar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/default_avatar"
-            android:scaleType="centerCrop"
-            android:background="@drawable/avatar_circle_bg"
-            android:clickable="true"
-            android:contentDescription="@string/profile_avatar"
-            android:focusable="true" />
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText
         android:id="@+id/searchInput"

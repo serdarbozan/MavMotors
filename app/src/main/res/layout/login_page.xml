@@ -6,14 +6,24 @@
     android:padding="24dp"
     android:gravity="center">
 
+    <ImageView
+        android:layout_width="320dp"
+        android:layout_height="160dp"
+        android:src="@drawable/logo_mavmotors"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="MavMotors Logo" />
+
     <TextView
-        android:id="@+id/tvLoginTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="MAVMOTORS"
         android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp" />
+        android:fontFamily="sans-serif-condensed"
+        android:letterSpacing="0.2"
+        android:textColor="#C0C0C0"
+        android:layout_marginBottom="32dp" />
 
     <EditText
         android:id="@+id/etEmail"
