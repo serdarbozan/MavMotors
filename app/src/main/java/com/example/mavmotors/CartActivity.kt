@@ -1,5 +1,6 @@
 package com.example.mavmotors
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -41,7 +42,8 @@ class CartActivity : AppCompatActivity() {
         recyclerView.adapter = cartAdapter
 
         findViewById<Button>(R.id.checkoutButton).setOnClickListener {
-            Toast.makeText(this, "Checkout feature coming soon!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, PaymentActivity::class.java)
+            startActivity(intent)
         }
 
         loadCartItems()

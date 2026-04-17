@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back" />
+
+        <TextView
+            android:id="@+id/totalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Total: $0.00"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/paymentMethodGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <RadioButton
+                android:id="@+id/cashOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pay in Full" />
+
+            <RadioButton
+                android:id="@+id/financeOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Financing" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/fullPaymentFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/cardholderNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Cardholder Name" />
+
+            <EditText
+                android:id="@+id/cardNumberInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Card Number"
+                android:inputType="number"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/expiryInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="MM/YY"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/cvvInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="CVV"
+                android:inputType="numberPassword"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/zipInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Billing ZIP"
+                android:inputType="number"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/financeFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/downPaymentInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Down Payment"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/incomeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Monthly Income"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/creditScoreInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Credit Score"
+                android:inputType="number"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/employmentMonthsInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Employment Length in Months"
+                android:inputType="number"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/termMonthsInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Loan Term in Months (36, 48, 60, 72)"
+                android:inputType="number"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/submitPaymentButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+</ScrollView>
