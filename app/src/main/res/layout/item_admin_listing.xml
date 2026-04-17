@@ -13,65 +13,81 @@
         android:layout_height="wrap_content"
         android:padding="12dp">
 
+        <!-- Vehicle Image -->
+        <ImageView
+            android:id="@+id/ivAdminListingImage"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder_car"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <TextView
             android:id="@+id/tvAdminListingType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivAdminListingImage"
+            app:layout_constraintStart_toEndOf="@id/ivAdminListingImage"
             app:layout_constraintEnd_toStartOf="@id/btnDeleteListing" />
 
         <TextView
             android:id="@+id/tvAdminListingYear"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:textSize="13sp"
             android:textColor="?attr/colorOnSurface"
             android:alpha="0.7"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             app:layout_constraintTop_toBottomOf="@id/tvAdminListingType"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivAdminListingImage"
             app:layout_constraintEnd_toStartOf="@id/btnDeleteListing" />
 
         <TextView
             android:id="@+id/tvAdminListingPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="?attr/colorSecondary"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             app:layout_constraintTop_toBottomOf="@id/tvAdminListingYear"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivAdminListingImage"
             app:layout_constraintEnd_toStartOf="@id/btnDeleteListing" />
 
         <TextView
             android:id="@+id/tvAdminListingSeller"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:textSize="12sp"
             android:textColor="?attr/colorOnSurface"
             android:alpha="0.6"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             app:layout_constraintTop_toBottomOf="@id/tvAdminListingPrice"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivAdminListingImage"
             app:layout_constraintEnd_toStartOf="@id/btnDeleteListing" />
 
         <TextView
             android:id="@+id/tvAdminListingStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:textSize="12sp"
             android:textColor="?attr/colorOnSurface"
             android:alpha="0.6"
             android:layout_marginTop="2dp"
             app:layout_constraintTop_toBottomOf="@id/tvAdminListingSeller"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivAdminListingImage"
             app:layout_constraintEnd_toStartOf="@id/btnDeleteListing"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@id/ivAdminListingImage" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeleteListing"

@@ -29,26 +29,51 @@ class CartAdapter(
 
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val vehicle = vehicles[position]
+        val context = holder.itemView.context
+
         holder.titleText.text = "${vehicle.year} ${vehicle.type}"
         holder.priceText.text = "$${String.format("%,.2f", vehicle.price)}"
 
-        if (vehicle.imagePath.isNotEmpty()) {
+        // Load image - check if it's a sample resource or file path
+        if (vehicle.isSampleImage && vehicle.imagePath.isNotEmpty()) {
+            // Load from drawable resource
+            val resourceId = context.resources.getIdentifier(
+                vehicle.imagePath,
+                "drawable",
+                context.packageName
+            )
+            if (resourceId != 0) {
+                Glide.with(context)
+                    .load(resourceId)
+                    .placeholder(R.drawable.placeholder_car)
+                    .error(R.drawable.placeholder_car)
+                    .centerCrop()
+                    .into(holder.imageView)
+            } else {
+                holder.imageView.setImageResource(R.drawable.placeholder_car)
+            }
+        } else if (vehicle.imagePath.isNotEmpty()) {
+            // Load from file path (user-added images)
             val imageFile = File(vehicle.imagePath)
             if (imageFile.exists()) {
-                Glide.with(holder.itemView.context)
+                Glide.with(context)
                     .load(imageFile)
                     .placeholder(R.drawable.placeholder_car)
                     .error(R.drawable.placeholder_car)
                     .centerCrop()
                     .into(holder.imageView)
+            } else {
+                holder.imageView.setImageResource(R.drawable.placeholder_car)
             }
+        } else {
+            holder.imageView.setImageResource(R.drawable.placeholder_car)
         }
 
         holder.removeButton.setOnClickListener { onRemoveClick(vehicle) }
         holder.itemView.setOnClickListener {
-            val intent = android.content.Intent(holder.itemView.context, VehicleDetailActivity::class.java)
+            val intent = android.content.Intent(context, VehicleDetailActivity::class.java)
             intent.putExtra("VEHICLE_ID", vehicle.id)
-            holder.itemView.context.startActivity(intent)
+            context.startActivity(intent)
         }
     }
 
