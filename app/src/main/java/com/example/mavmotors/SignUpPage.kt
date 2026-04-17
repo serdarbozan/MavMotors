@@ -27,7 +27,7 @@ class SignUpPage : AppCompatActivity() {
         val passwordField = findViewById<EditText>(R.id.passwordInput)
         val confirmPasswordField = findViewById<EditText>(R.id.confirmInput)
         val signUpButton = findViewById<MaterialButton>(R.id.signUpBtn)
-        val loginLink = findViewById<TextView>(R.id.gotoLogIn)
+        val loginLink = findViewById<TextView>(R.id.loginTxtBtn)
 
         signUpButton.setOnClickListener {
             val email = emailField.text.toString().trim()
@@ -73,7 +73,9 @@ class SignUpPage : AppCompatActivity() {
                     username = username,
                     password = password,
                     darkMode = true,
-                    createdAt = System.currentTimeMillis()
+                    createdAt = System.currentTimeMillis(),
+                    role = UserRole.BUYER,
+                    status = UserStatus.ACTIVE
                 )
 
                 userDao.insertUser(newUser)
@@ -81,7 +83,6 @@ class SignUpPage : AppCompatActivity() {
                 Toast.makeText(this@SignUpPage, "Account created! Please log in.", Toast.LENGTH_SHORT).show()
 
                 val intent = Intent(this@SignUpPage, LogInPage::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
             }

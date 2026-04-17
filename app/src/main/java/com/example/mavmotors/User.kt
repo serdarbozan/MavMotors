@@ -3,17 +3,6 @@ package com.example.mavmotors
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-object UserRole {
-    const val BUYER  = "BUYER"
-    const val SELLER = "SELLER"
-    const val ADMIN  = "ADMIN"
-}
-
-object UserStatus {
-    const val ACTIVE    = "ACTIVE"
-    const val SUSPENDED = "SUSPENDED"
-}
-
 @Entity(tableName = "users")
 data class User(
     @PrimaryKey(autoGenerate = true)
@@ -24,6 +13,14 @@ data class User(
     val darkMode: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
     val avatarPath: String = "",
-    val role: String = UserRole.BUYER,
-    val status: String = UserStatus.ACTIVE
+    val role: UserRole = UserRole.BUYER,
+    val status: UserStatus = UserStatus.ACTIVE
 )
+
+enum class UserRole {
+    BUYER, SELLER, ADMIN
+}
+
+enum class UserStatus {
+    ACTIVE, SUSPENDED, BANNED
+}

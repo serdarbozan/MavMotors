@@ -30,9 +30,10 @@ class LogInPage : AppCompatActivity() {
         val savedUserId = sharedPrefs.getInt("logged_in_user_id", -1)
         if (savedUserId != -1) {
             lifecycleScope.launch {
+                ensureAdminExists()
                 val user = userDao.getUserById(savedUserId)
                 if (user != null) {
-                    navigateToLandingPage(user)
+                    navigateToDestination(user)
                 }
             }
         }
@@ -54,14 +55,31 @@ class LogInPage : AppCompatActivity() {
             lifecycleScope.launch {
                 val user = userDao.login(enteredEmail, enteredPassword)
 
-                if (user != null) {
-                    sharedPrefs.edit {
-                        putInt("logged_in_user_id", user.id)
+                when {
+                    user == null -> {
+                        Toast.makeText(this@LogInPage, "Invalid email or password", Toast.LENGTH_SHORT).show()
                     }
-                    Toast.makeText(this@LogInPage, "Login successful", Toast.LENGTH_SHORT).show()
-                    navigateToLandingPage(user)
-                } else {
-                    Toast.makeText(this@LogInPage, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                    user.status == UserStatus.SUSPENDED -> {
+                        Toast.makeText(
+                            this@LogInPage,
+                            "Your account has been suspended. Please contact support.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    user.status == UserStatus.BANNED -> {
+                        Toast.makeText(
+                            this@LogInPage,
+                            "Your account has been banned.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    else -> {
+                        sharedPrefs.edit {
+                            putInt("logged_in_user_id", user.id)
+                        }
+                        Toast.makeText(this@LogInPage, "Login successful", Toast.LENGTH_SHORT).show()
+                        navigateToDestination(user)
+                    }
                 }
             }
         }
@@ -72,11 +90,43 @@ class LogInPage : AppCompatActivity() {
         }
     }
 
+    private fun navigateToDestination(user: User) {
+        if (user.role == UserRole.ADMIN) {
+            navigateToAdminPanel()
+        } else {
+            navigateToLandingPage(user)
+        }
+    }
+
     private fun navigateToLandingPage(user: User) {
         val intent = Intent(this, LandingPage::class.java)
         intent.putExtra("USERNAME", user.username)
         intent.putExtra("USER_ID", user.id)
         startActivity(intent)
         finish()
+    }
+
+    private fun navigateToAdminPanel() {
+        val intent = Intent(this, AdminPanelActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private suspend fun ensureAdminExists() {
+        val adminEmail = "admin@admin.com"
+        val existingAdmin = userDao.getUserByEmail(adminEmail)
+        if (existingAdmin == null) {
+            val admin = User(
+                email = adminEmail,
+                username = "Administrator",
+                password = "admin",
+                role = UserRole.ADMIN,
+                status = UserStatus.ACTIVE,
+                darkMode = true,
+                createdAt = System.currentTimeMillis()
+            )
+            userDao.insertUser(admin)
+            android.util.Log.d("LandingPage", "Default admin account created")
+        }
     }
 }
