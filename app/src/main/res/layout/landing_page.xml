@@ -93,7 +93,7 @@
         android:background="?attr/colorSurface"
         android:popupBackground="?attr/colorSurface"
         android:paddingEnd="8dp"
-        android:spinnerMode="dropdown"/>
+        android:spinnerMode="dropdown" />
 
     <HorizontalScrollView
         android:id="@+id/chipScrollView"
@@ -127,7 +127,7 @@
         android:id="@+id/addBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="-30dp"
+        android:layout_marginBottom="-68dp"
         android:backgroundTint="?attr/colorSecondary"
         android:elevation="8dp"
         android:gravity="center"
@@ -182,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Sell"
+                android:text=""
                 android:textColor="?attr/colorOnPrimary"
                 android:textSize="12sp" />
 
