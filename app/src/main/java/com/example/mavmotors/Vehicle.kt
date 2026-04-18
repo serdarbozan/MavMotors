@@ -12,12 +12,12 @@ data class Vehicle(
     val mileage: Int,
     val year: Int,
     val postedDate: Long,
-    val status: String,
+    val status: String = "Available",  // "Available" or "Sold"
     val imagePath: String = "",
     val sellerId: Int = 0,
     val description: String = "",
     val transmission: String = "Automatic",
     val fuelType: String = "Gasoline",
     val color: String = "Black",
-    val isSampleImage: Boolean = false  // NEW: Flag to identify sample images
+    val isSampleImage: Boolean = false
 )

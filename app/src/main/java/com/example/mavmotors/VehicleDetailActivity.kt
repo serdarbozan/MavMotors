@@ -2,12 +2,14 @@ package com.example.mavmotors
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
@@ -95,10 +97,21 @@ class VehicleDetailActivity : AppCompatActivity() {
                 }
 
                 val isOwner = vehicle.sellerId == currentUserId
+                val isSold = vehicle.status == "Sold"
                 val addToCartButton = findViewById<Button>(R.id.addToCartButton)
                 val editListingButton = findViewById<Button>(R.id.editListingButton)
 
-                if (isOwner) {
+                if (isSold) {
+                    // Vehicle is SOLD - show "SOLD" button (disabled)
+                    addToCartButton.visibility = android.view.View.VISIBLE
+                    addToCartButton.text = "SOLD"
+                    addToCartButton.isEnabled = false
+                    addToCartButton.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                        Color.parseColor("#888888")
+                    )
+                    editListingButton.visibility = android.view.View.GONE
+
+                } else if (isOwner) {
                     // Owner - hide add to cart, show edit
                     addToCartButton.visibility = android.view.View.GONE
                     editListingButton.visibility = android.view.View.VISIBLE
@@ -111,6 +124,11 @@ class VehicleDetailActivity : AppCompatActivity() {
                     // Buyer - show add to cart, hide edit
                     editListingButton.visibility = android.view.View.GONE
                     addToCartButton.visibility = android.view.View.VISIBLE
+                    addToCartButton.text = "Add to Cart"
+                    addToCartButton.isEnabled = true
+                    addToCartButton.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                        ContextCompat.getColor(this@VehicleDetailActivity, R.color.main_orange)
+                    )
 
                     val isInCart = cartDao.isInCart(currentUserId, vehicleId)
                     if (isInCart) {

@@ -97,10 +97,10 @@ class SettingsActivity : AppCompatActivity() {
             openGallery()
         }
 
-        // Preview theme change immediately but don't save yet
+        // Just track the toggle state - don't apply theme yet
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             tempDarkMode = isChecked
-            ThemeManager.applyThemeTemporarily(isChecked)
+            // No visual change until save
         }
 
         saveProfileButton.setOnClickListener {
@@ -128,7 +128,10 @@ class SettingsActivity : AppCompatActivity() {
                 ThemeManager.saveThemePreference(this@SettingsActivity, tempDarkMode)
 
                 Toast.makeText(this@SettingsActivity, "Profile updated!", Toast.LENGTH_SHORT).show()
+
+                // Restart activity to apply the new theme cleanly
                 finish()
+                startActivity(intent)
             }
         }
 

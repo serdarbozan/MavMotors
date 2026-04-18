@@ -53,15 +53,6 @@ object ThemeManager {
         return prefs.getBoolean(key, true)
     }
 
-    // Apply theme temporarily (for preview when toggling switch)
-    fun applyThemeTemporarily(isDarkMode: Boolean) {
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
-    }
-
     // Migrate old global preference to user-specific (call once after login)
     fun migrateGlobalToUserPreference(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

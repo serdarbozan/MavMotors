@@ -127,7 +127,8 @@
                         android:text="Pay in Full"
                         android:textColor="?attr/colorOnSurface"
                         android:buttonTint="?attr/colorSecondary"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"
+                        android:checked="true" />
 
                     <RadioButton
                         android:id="@+id/financeOption"
@@ -149,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="?attr/colorSurface"
@@ -343,7 +344,15 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Submit Button -->
+        <!-- Barrier to position button below whichever card is visible -->
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/paymentFieldsBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="fullPaymentCard,financeCard" />
+
+        <!-- Submit Button - Positioned below the barrier -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/submitPaymentButton"
             android:layout_width="match_parent"
@@ -355,7 +364,7 @@
             android:textColor="?attr/colorOnSecondary"
             app:cornerRadius="12dp"
             app:backgroundTint="?attr/colorSecondary"
-            app:layout_constraintTop_toBottomOf="@id/fullPaymentCard" />
+            app:layout_constraintTop_toBottomOf="@id/paymentFieldsBarrier" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,7 @@
 package com.example.mavmotors
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class VehicleAdapter(
         val mileageTextView: TextView = itemView.findViewById(R.id.mileageText)
         val yearTextView: TextView = itemView.findViewById(R.id.yearText)
         val heartCheckBox: CheckBox = itemView.findViewById(R.id.checkBox3)
+        val soldBadge: TextView = itemView.findViewById(R.id.soldBadge)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VehicleViewHolder {
@@ -39,6 +41,7 @@ class VehicleAdapter(
         val context = holder.itemView.context
 
         val isDarkMode = ThemeManager.isDarkMode(context)
+        val isSold = vehicle.status == "Sold"
 
         // Load image - check if it's a sample resource or file path
         if (vehicle.isSampleImage && vehicle.imagePath.isNotEmpty()) {
@@ -77,55 +80,75 @@ class VehicleAdapter(
 
         // Set text content
         holder.typeTextView.text = "${vehicle.year} ${vehicle.type}"
-        holder.priceTextView.text = "$${String.format("%,.2f", vehicle.price)}"
         holder.mileageTextView.text = "${vehicle.mileage} miles"
         holder.yearTextView.text = vehicle.year.toString()
 
-        // Apply theme-aware text colors
+        // Show SOLD badge and disable heart for sold vehicles
+        if (isSold) {
+            holder.soldBadge.visibility = View.VISIBLE
+            holder.priceTextView.text = "SOLD"
+            holder.priceTextView.setTextColor(Color.parseColor("#888888"))
+            holder.heartCheckBox.isEnabled = false
+            holder.heartCheckBox.alpha = 0.5f
+        } else {
+            holder.soldBadge.visibility = View.GONE
+            holder.priceTextView.text = "$${String.format("%,.2f", vehicle.price)}"
+            holder.heartCheckBox.isEnabled = true
+            holder.heartCheckBox.alpha = 1.0f
+
+            // Apply theme-aware text colors for price
+            if (isDarkMode) {
+                holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice_dark))
+            } else {
+                holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice))
+            }
+        }
+
+        // Apply theme-aware text colors for other text
         if (isDarkMode) {
             holder.typeTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle_dark))
-            holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice_dark))
             holder.mileageTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))
             holder.yearTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))
         } else {
             holder.typeTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle))
-            holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice))
             holder.mileageTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails))
             holder.yearTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails))
         }
 
-        // Heart checkbox - Force correct colors
-        holder.heartCheckBox.buttonTintList = null
-        holder.heartCheckBox.setOnCheckedChangeListener(null)
+        // Heart checkbox - Force correct colors (only if not sold)
+        if (!isSold) {
+            holder.heartCheckBox.buttonTintList = null
+            holder.heartCheckBox.setOnCheckedChangeListener(null)
 
-        val isChecked = favoriteStates[vehicle.id] ?: false
-        holder.heartCheckBox.isChecked = isChecked
+            val isChecked = favoriteStates[vehicle.id] ?: false
+            holder.heartCheckBox.isChecked = isChecked
 
-        // Set the correct heart color based on checked state
-        if (isChecked) {
-            holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(context, R.color.main_orange)
-            )
-        } else {
-            holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(context, R.color.heart_inactive)
-            )
-        }
+            // Set the correct heart color based on checked state
+            if (isChecked) {
+                holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(context, R.color.main_orange)
+                )
+            } else {
+                holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(context, R.color.heart_inactive)
+                )
+            }
 
-        holder.heartCheckBox.setOnCheckedChangeListener { _, checked ->
-            if (checked != favoriteStates[vehicle.id]) {
-                favoriteStates[vehicle.id] = checked
-                // Update tint immediately when clicked
-                if (checked) {
-                    holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(context, R.color.main_orange)
-                    )
-                } else {
-                    holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
-                        ContextCompat.getColor(context, R.color.heart_inactive)
-                    )
+            holder.heartCheckBox.setOnCheckedChangeListener { _, checked ->
+                if (checked != favoriteStates[vehicle.id]) {
+                    favoriteStates[vehicle.id] = checked
+                    // Update tint immediately when clicked
+                    if (checked) {
+                        holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(context, R.color.main_orange)
+                        )
+                    } else {
+                        holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(context, R.color.heart_inactive)
+                        )
+                    }
+                    onHeartClick?.invoke(vehicle, checked)
                 }
-                onHeartClick?.invoke(vehicle, checked)
             }
         }
 
