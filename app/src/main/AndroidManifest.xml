@@ -67,6 +67,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ReceiptActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".EditVehicleActivity"
             android:exported="false" />
 

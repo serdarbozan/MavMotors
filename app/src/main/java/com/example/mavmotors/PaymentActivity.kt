@@ -16,6 +16,8 @@ class PaymentActivity : AppCompatActivity()
 {
     private lateinit var cartDao: CartDao
     private var currentUserId: Int = -1
+    private var vehicleId: Int = 0
+    private var vehicleName: String = "Unknown Vehicle"
     private var vehiclePrice: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -71,7 +73,10 @@ class PaymentActivity : AppCompatActivity()
             }
 
             val selectedVehicle = cartVehicles.first()
+            vehicleId = selectedVehicle.id
+            vehicleName = "${selectedVehicle.year} ${selectedVehicle.type}"
             vehiclePrice = selectedVehicle.price
+
             totalText.text = "Total: $" + String.format("%,.2f", vehiclePrice)
         }
 
@@ -110,6 +115,8 @@ class PaymentActivity : AppCompatActivity()
                 }
 
                 val intent = Intent(this, FinanceProcessingActivity::class.java)
+                intent.putExtra("vehicleId", vehicleId)
+                intent.putExtra("vehicleName", vehicleName)
                 intent.putExtra("vehiclePrice", vehiclePrice)
                 intent.putExtra("downPayment", downPayment)
                 intent.putExtra("monthlyIncome", monthlyIncome)
