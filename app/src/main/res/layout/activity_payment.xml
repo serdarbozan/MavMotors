@@ -1,148 +1,362 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:attr/windowBackground"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="32dp">
 
-        <Button
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
+        <!-- Header with Back Button -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_back_arrow"
+                android:padding="12dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/back_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Checkout"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/backButton"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="8dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Total Amount Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/totalCard"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Back" />
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintTop_toBottomOf="@id/header">
 
-        <TextView
-            android:id="@+id/totalText"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Amount"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    android:alpha="0.7" />
+
+                <TextView
+                    android:id="@+id/totalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="$0.00"
+                    android:textColor="?attr/colorSecondary"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Payment Method Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/paymentCard"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Total: $0.00"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintTop_toBottomOf="@id/totalCard">
 
-        <RadioGroup
-            android:id="@+id/paymentMethodGroup"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Payment Method"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <RadioGroup
+                    android:id="@+id/paymentMethodGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/cashOption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pay in Full"
+                        android:textColor="?attr/colorOnSurface"
+                        android:buttonTint="?attr/colorSecondary"
+                        android:layout_marginBottom="8dp" />
+
+                    <RadioButton
+                        android:id="@+id/financeOption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Financing"
+                        android:textColor="?attr/colorOnSurface"
+                        android:buttonTint="?attr/colorSecondary" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Full Payment Fields Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/fullPaymentCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
-
-            <RadioButton
-                android:id="@+id/cashOption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pay in Full" />
-
-            <RadioButton
-                android:id="@+id/financeOption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Financing" />
-        </RadioGroup>
-
-        <LinearLayout
-            android:id="@+id/fullPaymentFields"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginTop="16dp"
             android:visibility="gone"
-            android:layout_marginTop="16dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintTop_toBottomOf="@id/paymentCard">
 
-            <EditText
-                android:id="@+id/cardholderNameInput"
+            <LinearLayout
+                android:id="@+id/fullPaymentFields"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Cardholder Name" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <EditText
-                android:id="@+id/cardNumberInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Card Number"
-                android:inputType="number"
-                android:layout_marginTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Card Details"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
 
-            <EditText
-                android:id="@+id/expiryInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="MM/YY"
-                android:layout_marginTop="8dp" />
+                <EditText
+                    android:id="@+id/cardholderNameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Cardholder Name"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="12dp" />
 
-            <EditText
-                android:id="@+id/cvvInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="CVV"
-                android:inputType="numberPassword"
-                android:layout_marginTop="8dp" />
+                <EditText
+                    android:id="@+id/cardNumberInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Card Number"
+                    android:inputType="number"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="12dp" />
 
-            <EditText
-                android:id="@+id/zipInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Billing ZIP"
-                android:inputType="number"
-                android:layout_marginTop="8dp" />
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/financeFields"
+                    <EditText
+                        android:id="@+id/expiryInput"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:hint="MM/YY"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textColorHint="?android:attr/textColorHint"
+                        android:background="@drawable/white_bg_round_corner"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <EditText
+                        android:id="@+id/cvvInput"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:hint="CVV"
+                        android:inputType="numberPassword"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textColorHint="?android:attr/textColorHint"
+                        android:background="@drawable/white_bg_round_corner"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:layout_marginStart="8dp" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/zipInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Billing ZIP"
+                    android:inputType="number"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginTop="12dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Finance Fields Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/financeCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginTop="16dp"
             android:visibility="gone"
-            android:layout_marginTop="16dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintTop_toBottomOf="@id/paymentCard">
 
-            <EditText
-                android:id="@+id/downPaymentInput"
+            <LinearLayout
+                android:id="@+id/financeFields"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Down Payment"
-                android:inputType="numberDecimal" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <EditText
-                android:id="@+id/incomeInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Monthly Income"
-                android:inputType="numberDecimal"
-                android:layout_marginTop="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Financing Details"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
 
-            <EditText
-                android:id="@+id/creditScoreInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Credit Score"
-                android:inputType="number"
-                android:layout_marginTop="8dp" />
+                <EditText
+                    android:id="@+id/downPaymentInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Down Payment"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="12dp" />
 
-            <EditText
-                android:id="@+id/employmentMonthsInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Employment Length in Months"
-                android:inputType="number"
-                android:layout_marginTop="8dp" />
+                <EditText
+                    android:id="@+id/incomeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Monthly Income"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="12dp" />
 
-            <EditText
-                android:id="@+id/termMonthsInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Loan Term in Months (36, 48, 60, 72)"
-                android:inputType="number"
-                android:layout_marginTop="8dp" />
-        </LinearLayout>
+                <EditText
+                    android:id="@+id/creditScoreInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Credit Score"
+                    android:inputType="number"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="12dp" />
 
-        <Button
+                <EditText
+                    android:id="@+id/employmentMonthsInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Employment Length (Months)"
+                    android:inputType="number"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="12dp" />
+
+                <EditText
+                    android:id="@+id/termMonthsInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Loan Term (36, 48, 60, 72 months)"
+                    android:inputType="number"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?android:attr/textColorHint"
+                    android:background="@drawable/white_bg_round_corner"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Submit Button -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/submitPaymentButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginTop="24dp"
             android:text="Continue"
-            android:layout_marginTop="24dp" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSecondary"
+            app:cornerRadius="12dp"
+            app:backgroundTint="?attr/colorSecondary"
+            app:layout_constraintTop_toBottomOf="@id/fullPaymentCard" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

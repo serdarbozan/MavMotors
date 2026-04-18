@@ -3,6 +3,7 @@ package com.example.mavmotors
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -22,18 +23,43 @@ class LogInPage : AppCompatActivity() {
         ThemeManager.applyTheme(this)
         setContentView(R.layout.login_page)
 
-        val db = DatabaseProvider.getDatabase(this)
-        userDao = db.userDao()
+        try {
+            val db = DatabaseProvider.getDatabase(this)
+            userDao = db.userDao()
+        } catch (e: Exception) {
+            Log.e("LogInPage", "Database initialization failed", e)
+            Toast.makeText(this, "Database error: ${e.message}", Toast.LENGTH_LONG).show()
+            return
+        }
+
         sharedPrefs = getSharedPreferences("MavMotorsPrefs", MODE_PRIVATE)
+
+        // Create admin account in background (doesn't block UI)
+        lifecycleScope.launch {
+            try {
+                ensureAdminExists()
+            } catch (e: Exception) {
+                Log.e("LogInPage", "Admin creation failed", e)
+            }
+        }
 
         // Check if user is already logged in
         val savedUserId = sharedPrefs.getInt("logged_in_user_id", -1)
         if (savedUserId != -1) {
             lifecycleScope.launch {
-                ensureAdminExists()
-                val user = userDao.getUserById(savedUserId)
-                if (user != null) {
-                    navigateToDestination(user)
+                try {
+                    val user = userDao.getUserById(savedUserId)
+                    if (user != null && user.status == UserStatus.ACTIVE) {
+                        // Migrate old global theme preference to this user
+                        ThemeManager.migrateGlobalToUserPreference(this@LogInPage)
+                        navigateToDestination(user)
+                    } else {
+                        // Clear invalid saved login
+                        sharedPrefs.edit { remove("logged_in_user_id") }
+                    }
+                } catch (e: Exception) {
+                    Log.e("LogInPage", "Auto-login check failed", e)
+                    sharedPrefs.edit { remove("logged_in_user_id") }
                 }
             }
         }
@@ -53,33 +79,41 @@ class LogInPage : AppCompatActivity() {
             }
 
             lifecycleScope.launch {
-                val user = userDao.login(enteredEmail, enteredPassword)
+                try {
+                    val user = userDao.login(enteredEmail, enteredPassword)
 
-                when {
-                    user == null -> {
-                        Toast.makeText(this@LogInPage, "Invalid email or password", Toast.LENGTH_SHORT).show()
-                    }
-                    user.status == UserStatus.SUSPENDED -> {
-                        Toast.makeText(
-                            this@LogInPage,
-                            "Your account has been suspended. Please contact support.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    user.status == UserStatus.BANNED -> {
-                        Toast.makeText(
-                            this@LogInPage,
-                            "Your account has been banned.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    else -> {
-                        sharedPrefs.edit {
-                            putInt("logged_in_user_id", user.id)
+                    when {
+                        user == null -> {
+                            Toast.makeText(this@LogInPage, "Invalid email or password", Toast.LENGTH_SHORT).show()
                         }
-                        Toast.makeText(this@LogInPage, "Login successful", Toast.LENGTH_SHORT).show()
-                        navigateToDestination(user)
+                        user.status == UserStatus.SUSPENDED -> {
+                            Toast.makeText(
+                                this@LogInPage,
+                                "Your account has been suspended. Please contact support.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        user.status == UserStatus.BANNED -> {
+                            Toast.makeText(
+                                this@LogInPage,
+                                "Your account has been banned.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        else -> {
+                            sharedPrefs.edit {
+                                putInt("logged_in_user_id", user.id)
+                            }
+                            // Migrate any old global theme preference to this user
+                            ThemeManager.migrateGlobalToUserPreference(this@LogInPage)
+
+                            Toast.makeText(this@LogInPage, "Login successful", Toast.LENGTH_SHORT).show()
+                            navigateToDestination(user)
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e("LogInPage", "Login failed", e)
+                    Toast.makeText(this@LogInPage, "Login error. Please try again.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -126,7 +160,7 @@ class LogInPage : AppCompatActivity() {
                 createdAt = System.currentTimeMillis()
             )
             userDao.insertUser(admin)
-            android.util.Log.d("LandingPage", "Default admin account created")
+            Log.d("LogInPage", "Default admin account created")
         }
     }
 }

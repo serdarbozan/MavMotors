@@ -10,12 +10,14 @@
         android:id="@+id/toolbarAdminUsers"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/main_orange"
+        android:background="?attr/colorPrimaryVariant"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_back_arrow"
         app:navigationIconTint="?attr/colorOnPrimary"
         app:title="Manage Users"
-        app:titleTextColor="?attr/colorOnPrimary"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:titleTextColor="?attr/colorOnPrimary" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAdminUsers"

@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
@@ -98,8 +97,10 @@ class SettingsActivity : AppCompatActivity() {
             openGallery()
         }
 
+        // Preview theme change immediately but don't save yet
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             tempDarkMode = isChecked
+            ThemeManager.applyThemeTemporarily(isChecked)
         }
 
         saveProfileButton.setOnClickListener {
@@ -123,34 +124,24 @@ class SettingsActivity : AppCompatActivity() {
 
                 userDao.updateUser(updatedUser)
 
-                val currentTheme = ThemeManager.isDarkMode(this@SettingsActivity)
-                if (tempDarkMode != currentTheme) {
-                    ThemeManager.saveThemePreference(this@SettingsActivity, tempDarkMode)
-                    if (tempDarkMode) {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    } else {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    }
-                }
+                // Save the theme preference permanently for this user
+                ThemeManager.saveThemePreference(this@SettingsActivity, tempDarkMode)
 
                 Toast.makeText(this@SettingsActivity, "Profile updated!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
 
-        // FIXED: My Listings - opens MyListingsActivity
         myListingsButton.setOnClickListener {
             val intent = Intent(this, MyListingsActivity::class.java)
             startActivity(intent)
         }
 
-        // FIXED: Saved Vehicles - opens SavedVehiclesActivity
         savedVehiclesButton.setOnClickListener {
             val intent = Intent(this, SavedVehiclesActivity::class.java)
             startActivity(intent)
         }
 
-        // Logout
         logoutButton.setOnClickListener {
             sharedPrefs.edit().remove("logged_in_user_id").apply()
             val intent = Intent(this, LogInPage::class.java)

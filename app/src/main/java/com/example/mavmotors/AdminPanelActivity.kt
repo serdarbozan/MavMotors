@@ -2,7 +2,6 @@ package com.example.mavmotors
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,19 +27,21 @@ class AdminPanelActivity : AppCompatActivity() {
 
         loadStats()
 
-        findViewById<Button>(R.id.btnManageUsers).setOnClickListener {
+        // Changed from Button to LinearLayout (matching the new design)
+        findViewById<android.widget.LinearLayout>(R.id.btnManageUsers).setOnClickListener {
             startActivity(Intent(this, AdminUsersActivity::class.java))
         }
 
-        findViewById<Button>(R.id.btnManageListings).setOnClickListener {
+        findViewById<android.widget.LinearLayout>(R.id.btnManageListings).setOnClickListener {
             startActivity(Intent(this, AdminListingsActivity::class.java))
         }
 
-        findViewById<Button>(R.id.btnViewLogs).setOnClickListener {
+        findViewById<android.widget.LinearLayout>(R.id.btnViewLogs).setOnClickListener {
             startActivity(Intent(this, AdminLogsActivity::class.java))
         }
 
-        findViewById<Button>(R.id.btnAdminLogout).setOnClickListener {
+        // Logout button is still a MaterialButton
+        findViewById<com.google.android.material.button.MaterialButton>(R.id.btnAdminLogout).setOnClickListener {
             sharedPrefs.edit().remove("logged_in_user_id").apply()
             startActivity(Intent(this, LogInPage::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -74,10 +75,10 @@ class AdminPanelActivity : AppCompatActivity() {
 
             findViewById<TextView>(R.id.tvAdminWelcome).text =
                 "Welcome, ${admin.username}"
-            findViewById<TextView>(R.id.tvTotalUsers).text =
-                "Total Users: $totalUsers"
-            findViewById<TextView>(R.id.tvTotalListings).text =
-                "Total Listings: $totalListings"
+            findViewById<TextView>(R.id.tvTotalUsersValue).text =
+                totalUsers.toString()
+            findViewById<TextView>(R.id.tvTotalListingsValue).text =
+                totalListings.toString()
         }
     }
 

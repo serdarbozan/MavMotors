@@ -30,16 +30,16 @@
             android:id="@+id/ordersTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_variable_font"
+            android:gravity="center"
+            android:letterSpacing="0.2"
             android:text="My Orders"
             android:textColor="#FFFFFF"
             android:textSize="28sp"
-            android:fontFamily="sans-serif-condensed"
-            android:letterSpacing="0.2"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
