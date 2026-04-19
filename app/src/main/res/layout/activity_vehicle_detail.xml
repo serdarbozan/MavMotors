@@ -224,13 +224,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/descriptionLabel" />
 
+        <!-- Buy Now Button (only shown for buyers) -->
+        <Button
+            android:id="@+id/buyNowButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:text="Buy Now"
+            android:textColor="?attr/colorOnPrimary"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:cornerRadius="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detailDescription" />
+
         <!-- Add to Cart Button (only shown for buyers) -->
         <Button
             android:id="@+id/addToCartButton"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="?attr/colorSecondary"
             android:text="Add to Cart"
@@ -240,7 +258,7 @@
             app:cornerRadius="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detailDescription" />
+            app:layout_constraintTop_toBottomOf="@id/buyNowButton" />
 
         <!-- Edit Listing Button (only shown for owners) -->
         <Button

@@ -100,21 +100,22 @@ class VehicleDetailActivity : AppCompatActivity() {
                 val isOwner = vehicle.sellerId == currentUserId
                 val isSold = vehicle.status == "Sold"
                 val addToCartButton = findViewById<Button>(R.id.addToCartButton)
+                val buyNowButton = findViewById<Button>(R.id.buyNowButton)
                 val editListingButton = findViewById<Button>(R.id.editListingButton)
 
                 if (isSold) {
-                    // Vehicle is SOLD - show "SOLD" button (disabled)
                     addToCartButton.visibility = android.view.View.VISIBLE
                     addToCartButton.text = "SOLD"
                     addToCartButton.isEnabled = false
                     addToCartButton.backgroundTintList = android.content.res.ColorStateList.valueOf(
                         Color.parseColor("#888888")
                     )
+                    buyNowButton.visibility = android.view.View.GONE
                     editListingButton.visibility = android.view.View.GONE
 
                 } else if (isOwner) {
-                    // Owner - hide add to cart, show edit
                     addToCartButton.visibility = android.view.View.GONE
+                    buyNowButton.visibility = android.view.View.GONE
                     editListingButton.visibility = android.view.View.VISIBLE
                     editListingButton.setOnClickListener {
                         val intent = Intent(this@VehicleDetailActivity, EditVehicleActivity::class.java)
@@ -122,14 +123,20 @@ class VehicleDetailActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 } else {
-                    // Buyer - show add to cart, hide edit
                     editListingButton.visibility = android.view.View.GONE
+                    buyNowButton.visibility = android.view.View.VISIBLE
                     addToCartButton.visibility = android.view.View.VISIBLE
                     addToCartButton.text = "Add to Cart"
                     addToCartButton.isEnabled = true
                     addToCartButton.backgroundTintList = android.content.res.ColorStateList.valueOf(
                         ContextCompat.getColor(this@VehicleDetailActivity, R.color.main_orange)
                     )
+
+                    buyNowButton.setOnClickListener {
+                        val intent = Intent(this@VehicleDetailActivity, PaymentActivity::class.java)
+                        intent.putExtra("VEHICLE_ID", vehicleId)
+                        startActivity(intent)
+                    }
 
                     val isInCart = cartDao.isInCart(currentUserId, vehicleId)
                     if (isInCart) {

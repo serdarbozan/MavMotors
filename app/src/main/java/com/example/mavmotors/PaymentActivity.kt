@@ -97,22 +97,31 @@ class PaymentActivity : AppCompatActivity() {
             }
         }
 
+        val intentVehicleId = intent.getIntExtra("VEHICLE_ID", -1)
+
         lifecycleScope.launch {
-            val cartVehicles = cartDao.getCartVehicles(currentUserId)
-
-            if (cartVehicles.isEmpty()) {
-                totalText.text = "$0.00"
-                Toast.makeText(this@PaymentActivity, "Cart is empty", Toast.LENGTH_SHORT).show()
-                submitButton.isEnabled = false
-                return@launch
+            if (intentVehicleId != -1) {
+                val vehicle = vehicleDao.getVehicleById(intentVehicleId)
+                if (vehicle != null) {
+                    vehicleId = vehicle.id
+                    vehicleName = "${vehicle.year} ${vehicle.type}"
+                    vehiclePrice = vehicle.price
+                    totalText.text = "$${String.format("%,.2f", vehiclePrice)}"
+                }
+            } else {
+                val cartVehicles = cartDao.getCartVehicles(currentUserId)
+                if (cartVehicles.isEmpty()) {
+                    totalText.text = "$0.00"
+                    Toast.makeText(this@PaymentActivity, "Cart is empty", Toast.LENGTH_SHORT).show()
+                    submitButton.isEnabled = false
+                    return@launch
+                }
+                val selectedVehicle = cartVehicles.first()
+                vehicleId = selectedVehicle.id
+                vehicleName = "${selectedVehicle.year} ${selectedVehicle.type}"
+                vehiclePrice = selectedVehicle.price
+                totalText.text = "$${String.format("%,.2f", vehiclePrice)}"
             }
-
-            val selectedVehicle = cartVehicles.first()
-            vehicleId = selectedVehicle.id
-            vehicleName = "${selectedVehicle.year} ${selectedVehicle.type}"
-            vehiclePrice = selectedVehicle.price
-
-            totalText.text = "$${String.format("%,.2f", vehiclePrice)}"
         }
 
         submitButton.setOnClickListener {
