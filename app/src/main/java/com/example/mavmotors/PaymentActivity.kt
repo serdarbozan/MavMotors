@@ -2,6 +2,8 @@ package com.example.mavmotors
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -61,6 +63,21 @@ class PaymentActivity : AppCompatActivity() {
         val employmentMonthsInput = findViewById<EditText>(R.id.employmentMonthsInput)
         val termMonthsInput = findViewById<EditText>(R.id.termMonthsInput)
 
+        expiryInput.addTextChangedListener(object : TextWatcher {
+            private var isFormatting = false
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isFormatting || s == null) return
+                isFormatting = true
+                val digits = s.toString().replace("/", "")
+                val formatted = if (digits.length >= 2) "${digits.substring(0, 2)}/${digits.substring(2)}" else digits
+                s.replace(0, s.length, formatted)
+                isFormatting = false
+            }
+        })
+
         backButton.setOnClickListener {
             finish()
         }
@@ -117,6 +134,21 @@ class PaymentActivity : AppCompatActivity() {
                 if (cardholderName.isEmpty() || cardNumber.isEmpty() ||
                     expiry.isEmpty() || cvv.isEmpty() || zip.isEmpty()) {
                     Toast.makeText(this, "Please fill in all card details", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (cardNumber.replace(" ", "").length != 16 || !cardNumber.replace(" ", "").all { it.isDigit() }) {
+                    Toast.makeText(this, "Card number must be 16 digits", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (!Regex("""\d{2}/\d{2}""").matches(expiry)) {
+                    Toast.makeText(this, "Expiry must be in MM/YY format", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (cvv.length != 3 || !cvv.all { it.isDigit() }) {
+                    Toast.makeText(this, "CVV must be 3 digits", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
