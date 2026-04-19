@@ -22,7 +22,8 @@ class VehicleAdapter(
 
     class VehicleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val vehicleImage: ImageView = itemView.findViewById(R.id.vehicleImage)
-        val typeTextView: TextView = itemView.findViewById(R.id.carTitle)
+        val titleTextView: TextView = itemView.findViewById(R.id.carTitle)
+        val typeTextView: TextView = itemView.findViewById(R.id.typeText)
         val priceTextView: TextView = itemView.findViewById(R.id.priceText)
         val mileageTextView: TextView = itemView.findViewById(R.id.mileageText)
         val yearTextView: TextView = itemView.findViewById(R.id.yearText)
@@ -79,7 +80,8 @@ class VehicleAdapter(
         }
 
         // Set text content
-        holder.typeTextView.text = "${vehicle.year} ${vehicle.type}"
+        holder.titleTextView.text = "${vehicle.year} ${vehicle.brand} ${vehicle.model}"
+        holder.typeTextView.text = "${vehicle.type}"
         holder.mileageTextView.text = "${vehicle.mileage} miles"
         holder.yearTextView.text = vehicle.year.toString()
 
@@ -106,6 +108,7 @@ class VehicleAdapter(
 
         // Apply theme-aware text colors for other text
         if (isDarkMode) {
+            holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle_dark))
             holder.typeTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle_dark))
             holder.mileageTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))
             holder.yearTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))

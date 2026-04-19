@@ -66,6 +66,8 @@ class AddCarActivity : AppCompatActivity() {
         cameraIcon = findViewById(R.id.cameraIcon)
         imageHintText = findViewById(R.id.imageHintText)
 
+        val brandInput = findViewById<AutoCompleteTextView>(R.id.typeInput)
+        val modelInput = findViewById<AutoCompleteTextView>(R.id.typeInput)
         val typeInput = findViewById<AutoCompleteTextView>(R.id.typeInput)
         val priceInput = findViewById<EditText>(R.id.priceInput)
         val mileageInput = findViewById<EditText>(R.id.mileageInput)
@@ -92,6 +94,8 @@ class AddCarActivity : AppCompatActivity() {
         }
 
         saveButton.setOnClickListener {
+            val brand = brandInput.text.toString().trim()
+            val model = modelInput.text.toString().trim()
             val type = typeInput.text.toString().trim()
             val priceStr = priceInput.text.toString().trim()
             val mileageStr = mileageInput.text.toString().trim()
@@ -126,6 +130,8 @@ class AddCarActivity : AppCompatActivity() {
                 val imagePath = saveImageToInternalStorage(selectedImageUri)
 
                 val vehicle = Vehicle(
+                    brand = brand,
+                    model = model,
                     type = type,
                     price = price,
                     mileage = mileage,

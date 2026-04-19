@@ -61,7 +61,8 @@ class VehicleDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             currentVehicle = vehicleDao.getVehicleById(vehicleId)
             currentVehicle?.let { vehicle ->
-                findViewById<TextView>(R.id.detailTitle).text = "${vehicle.year} ${vehicle.type}"
+                findViewById<TextView>(R.id.detailTitle).text = "${vehicle.year} ${vehicle.brand} ${vehicle.model} "
+                findViewById<TextView>(R.id.detailType).text = "${vehicle.type}"
                 findViewById<TextView>(R.id.detailPrice).text = "$${String.format("%,.2f", vehicle.price)}"
                 findViewById<TextView>(R.id.detailMileage).text = "${vehicle.mileage} miles"
                 findViewById<TextView>(R.id.detailDescription).text = vehicle.description.ifEmpty { "No description provided." }

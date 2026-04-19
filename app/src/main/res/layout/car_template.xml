@@ -75,6 +75,15 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/typeText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SUV"
+                        android:textSize="13sp"
+                        android:alpha="0.7"
+                        android:layout_marginTop="2dp"/>
+
+                    <TextView
                         android:id="@+id/priceText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
