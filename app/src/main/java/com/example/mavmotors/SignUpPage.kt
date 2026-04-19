@@ -41,7 +41,7 @@ class SignUpPage : AppCompatActivity() {
             }
 
             if (!isValidEmail(email)) {
-                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Email must end with @mavs.uta.edu", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -96,6 +96,6 @@ class SignUpPage : AppCompatActivity() {
     }
 
     private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return email.endsWith("@mavs.uta.edu")
     }
 }

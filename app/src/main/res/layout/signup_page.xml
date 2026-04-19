@@ -78,7 +78,7 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/underline_border"
-        android:hint="you@example.co"
+        android:hint="example@mavs.uta.edu"
         android:inputType="textEmailAddress"
         android:paddingStart="30dp"
         android:paddingEnd="12dp"

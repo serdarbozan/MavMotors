@@ -52,8 +52,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         ThemeManager.applyTheme(this)
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         sharedPrefs = getSharedPreferences("MavMotorsPrefs", MODE_PRIVATE)
@@ -97,10 +97,11 @@ class SettingsActivity : AppCompatActivity() {
             openGallery()
         }
 
-        // Just track the toggle state - don't apply theme yet
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             tempDarkMode = isChecked
-            // No visual change until save
+            ThemeManager.saveThemePreference(this, isChecked)
+            ThemeManager.applyTheme(this)
+            recreate()
         }
 
         saveProfileButton.setOnClickListener {
