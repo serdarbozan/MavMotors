@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import android.content.Intent
 import android.widget.Button
 import com.google.android.material.slider.RangeSlider
+import com.google.android.material.button.MaterialButton
 
 class FilterActivity : AppCompatActivity() {
 
@@ -68,9 +69,40 @@ class FilterActivity : AppCompatActivity() {
             setResult(RESULT_OK, resultIntent)
             finish()
         }
+
+        val resetBtn = findViewById<MaterialButton>(R.id.resetFilterBtn)
+
+        resetBtn.setOnClickListener {
+
+            // Reset spinners
+            makeSpinner.setSelection(0)
+            modelSpinner.setSelection(0)
+
+            // Reset sliders
+            priceSlider.values = listOf(0f, 100000f)
+            yearSlider.values = listOf(2000f, 2026f)
+            mileageSlider.values = listOf(0f, 300000f)
+
+            val resultIntent = Intent().apply {
+                putExtra("MAKE", "All")
+                putExtra("MODEL", "All")
+
+                putExtra("MIN_PRICE", 0)
+                putExtra("MAX_PRICE", 100000)
+
+                putExtra("MIN_YEAR", 2000)
+                putExtra("MAX_YEAR", 2026)
+
+                putExtra("MIN_MILEAGE", 0)
+                putExtra("MAX_MILEAGE", 300000)
+            }
+
+            setResult(RESULT_OK, resultIntent)
+            finish()
+        }
         val modelsMap = mapOf(
 
-            "Audi" to listOf("All", "A3", "A4", "A6", "Q3", "Q5", "Q7"),
+            "Audi" to listOf("All", "A3", "A4", "A6", "Q3", "Q5", "Q7", "RS Q8"),
 
             "BMW" to listOf("All", "3 Series", "5 Series", "7 Series", "X3", "X5", "X7"),
 
@@ -113,7 +145,9 @@ class FilterActivity : AppCompatActivity() {
             "Volkswagen" to listOf("All", "Golf", "Passat", "Jetta", "Tiguan", "Atlas")
         )
 
-        val makes = modelsMap.keys.sorted()
+        val makes = mutableListOf("All").apply {
+            addAll(modelsMap.keys.sorted())
+        }
 
         val makeAdapter = ArrayAdapter(
             this,
@@ -142,7 +176,7 @@ class FilterActivity : AppCompatActivity() {
 
                 modelAdapter.setDropDownViewResource(R.layout.spinner_item)
                 modelSpinner.adapter = modelAdapter
-
+                modelSpinner.setSelection(0)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -154,4 +188,5 @@ class FilterActivity : AppCompatActivity() {
             insets
         }
     }
+
 }

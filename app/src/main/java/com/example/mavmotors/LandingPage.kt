@@ -56,6 +56,9 @@ class LandingPage : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val data = result.data ?: return@registerForActivityResult
 
+                filterMake = data.getStringExtra("MAKE") ?: "All"
+                filterModel = data.getStringExtra("MODEL") ?: "All"
+
                 filterMinPrice = data.getIntExtra("MIN_PRICE", 0)
                 filterMaxPrice = data.getIntExtra("MAX_PRICE", Int.MAX_VALUE)
 
@@ -345,9 +348,17 @@ class LandingPage : AppCompatActivity() {
                 }
 
                 baseList.filter { v ->
+
+                    val makeMatch = filterMake == "All" ||
+                            v.brand.equals(filterMake, ignoreCase = true)
+
+                    val modelMatch = filterModel == "All" ||
+                            v.model.equals(filterModel, ignoreCase = true)
                     v.price in filterMinPrice.toDouble()..filterMaxPrice.toDouble() &&
                             v.year in filterMinYear..filterMaxYear &&
-                            v.mileage in filterMinMileage..filterMaxMileage
+                            v.mileage in filterMinMileage..filterMaxMileage &&
+                            makeMatch &&
+                            modelMatch
                 }
             }
 
