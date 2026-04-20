@@ -271,12 +271,12 @@ class LandingPage : AppCompatActivity() {
                     postedDate = System.currentTimeMillis(), status = "Available",
                     description = "Heavy-duty truck with towing package", sellerId = 0,
                     transmission = "Automatic", fuelType = "Diesel", color = "Red",
-                    imagePath = "red_truck", isSampleImage = true),
+                    imagePath = "red_silverado", isSampleImage = true),
                 Vehicle(brand = "Ford", model = "Mustang", type = "Coupe", price = 42000.0, mileage = 8000, year = 2024,
                     postedDate = System.currentTimeMillis(), status = "Available",
                     description = "Sporty coupe with premium sound system", sellerId = 0,
                     transmission = "Manual", fuelType = "Gasoline", color = "Blue",
-                    imagePath = "blue_coupe", isSampleImage = true)
+                    imagePath = "blue_mustang", isSampleImage = true)
             ).forEach { vehicleDao.insertVehicle(it) }
         }
     }
