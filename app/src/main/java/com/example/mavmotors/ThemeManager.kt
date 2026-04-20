@@ -39,6 +39,20 @@ object ThemeManager {
         }
     }
 
+    // ADD THIS NEW FUNCTION HERE
+    // Apply theme immediately without restart (for preview)
+    fun applyThemeImmediate(context: Context) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val key = getUserDarkModeKey(context)
+        val isDarkMode = prefs.getBoolean(key, true)
+
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
     // Save theme preference for the current user
     fun saveThemePreference(context: Context, isDarkMode: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

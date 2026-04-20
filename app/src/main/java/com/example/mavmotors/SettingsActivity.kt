@@ -97,11 +97,11 @@ class SettingsActivity : AppCompatActivity() {
             openGallery()
         }
 
+        // Just track the toggle state - don't apply theme until save
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             tempDarkMode = isChecked
             ThemeManager.saveThemePreference(this, isChecked)
-            ThemeManager.applyTheme(this)
-            recreate()
+            ThemeManager.applyThemeImmediate(this)
         }
 
         saveProfileButton.setOnClickListener {
@@ -125,14 +125,24 @@ class SettingsActivity : AppCompatActivity() {
 
                 userDao.updateUser(updatedUser)
 
-                // Save the theme preference permanently for this user
+                // Save the theme preference
+                val themeChanged = tempDarkMode != ThemeManager.isDarkMode(this@SettingsActivity)
                 ThemeManager.saveThemePreference(this@SettingsActivity, tempDarkMode)
 
                 Toast.makeText(this@SettingsActivity, "Profile updated!", Toast.LENGTH_SHORT).show()
 
-                // Restart activity to apply the new theme cleanly
-                finish()
-                startActivity(intent)
+                if (themeChanged) {
+                    // Apply theme globally and restart the entire app smoothly
+                    ThemeManager.applyTheme(this@SettingsActivity)
+
+                    // Restart the app from the beginning for clean theme switch
+                    val intent = Intent(this@SettingsActivity, LandingPage::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+                } else {
+                    finish()
+                }
             }
         }
 
