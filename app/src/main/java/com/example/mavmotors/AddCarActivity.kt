@@ -66,8 +66,8 @@ class AddCarActivity : AppCompatActivity() {
         cameraIcon = findViewById(R.id.cameraIcon)
         imageHintText = findViewById(R.id.imageHintText)
 
-        val brandInput = findViewById<AutoCompleteTextView>(R.id.typeInput)
-        val modelInput = findViewById<AutoCompleteTextView>(R.id.typeInput)
+        val brandInput = findViewById<EditText>(R.id.brandInput)
+        val modelInput = findViewById<EditText>(R.id.modelInput)
         val typeInput = findViewById<AutoCompleteTextView>(R.id.typeInput)
         val priceInput = findViewById<EditText>(R.id.priceInput)
         val mileageInput = findViewById<EditText>(R.id.mileageInput)
@@ -112,7 +112,7 @@ class AddCarActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (type.isEmpty() || priceStr.isEmpty() || mileageStr.isEmpty() || yearStr.isEmpty()) {
+            if (brand.isEmpty() || model.isEmpty() || type.isEmpty() || priceStr.isEmpty() || mileageStr.isEmpty() || yearStr.isEmpty()) {
                 Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

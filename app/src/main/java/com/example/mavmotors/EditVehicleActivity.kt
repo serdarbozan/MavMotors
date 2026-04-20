@@ -25,6 +25,8 @@ class EditVehicleActivity : AppCompatActivity() {
     private var imageChanged = false
 
     private lateinit var vehicleImage: ImageView
+    private lateinit var brandInput: EditText
+    private lateinit var modelInput: EditText
     private lateinit var typeInput: AutoCompleteTextView
     private lateinit var priceInput: EditText
     private lateinit var mileageInput: EditText
@@ -64,6 +66,8 @@ class EditVehicleActivity : AppCompatActivity() {
         vehicleDao = db.vehicleDao()
 
         vehicleImage = findViewById(R.id.editVehicleImage)
+        brandInput = findViewById(R.id.editBrandInput)
+        modelInput = findViewById(R.id.editModelInput)
         typeInput = findViewById(R.id.editTypeInput)
         priceInput = findViewById(R.id.editPriceInput)
         mileageInput = findViewById(R.id.editMileageInput)
@@ -105,6 +109,8 @@ class EditVehicleActivity : AppCompatActivity() {
         lifecycleScope.launch {
             currentVehicle = vehicleDao.getVehicleById(vehicleId)
             currentVehicle?.let { vehicle ->
+                brandInput.setText(vehicle.brand)
+                modelInput.setText(vehicle.model)
                 typeInput.setText(vehicle.type)
                 priceInput.setText(vehicle.price.toInt().toString())
                 mileageInput.setText(vehicle.mileage.toString())
@@ -130,6 +136,8 @@ class EditVehicleActivity : AppCompatActivity() {
     }
 
     private fun saveChanges() {
+        val brand = brandInput.text.toString().trim()
+        val model = modelInput.text.toString().trim()
         val type = typeInput.text.toString().trim()
         val priceStr = priceInput.text.toString().trim()
         val mileageStr = mileageInput.text.toString().trim()
@@ -139,7 +147,7 @@ class EditVehicleActivity : AppCompatActivity() {
         val fuelType = fuelTypeInput.text.toString().trim()
         val color = colorInput.text.toString().trim()
 
-        if (type.isEmpty() || priceStr.isEmpty() || mileageStr.isEmpty() || yearStr.isEmpty()) {
+        if (brand.isEmpty() || model.isEmpty() || type.isEmpty() || priceStr.isEmpty() || mileageStr.isEmpty() || yearStr.isEmpty()) {
             Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
             return
         }
@@ -156,6 +164,8 @@ class EditVehicleActivity : AppCompatActivity() {
         lifecycleScope.launch {
             currentVehicle?.let { vehicle ->
                 val updatedVehicle = vehicle.copy(
+                    brand = brand,
+                    model = model,
                     type = type,
                     price = price,
                     mileage = mileage,
