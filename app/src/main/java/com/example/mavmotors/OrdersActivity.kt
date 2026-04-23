@@ -18,8 +18,7 @@ import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import java.io.File
 
-class OrdersActivity : AppCompatActivity()
-{
+class OrdersActivity : AppCompatActivity() {
     private lateinit var ordersRecyclerView: RecyclerView
     private lateinit var emptyOrdersText: TextView
     private lateinit var orderDao: OrderDao
@@ -27,8 +26,7 @@ class OrdersActivity : AppCompatActivity()
     private lateinit var orderVehicleAdapter: OrderVehicleAdapter
     private var currentUserId: Int = -1
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeManager.applyTheme(this)
         setContentView(R.layout.activity_orders)
@@ -54,13 +52,16 @@ class OrdersActivity : AppCompatActivity()
         loadOrders()
     }
 
-    private fun loadOrders()
-    {
+    override fun onResume() {
+        super.onResume()
+        loadOrders()
+    }
+
+    private fun loadOrders() {
         lifecycleScope.launch {
             val orders = orderDao.getOrdersForUser(currentUserId)
 
-            if (orders.isEmpty())
-            {
+            if (orders.isEmpty()) {
                 emptyOrdersText.visibility = View.VISIBLE
                 ordersRecyclerView.visibility = View.GONE
                 return@launch
@@ -68,25 +69,23 @@ class OrdersActivity : AppCompatActivity()
 
             val purchasedVehicles = mutableListOf<Vehicle>()
 
-            for (order in orders)
-            {
+            for (order in orders) {
                 val vehicle = vehicleDao.getVehicleById(order.vehicleId)
-                if (vehicle != null)
-                {
+                if (vehicle != null) {
                     purchasedVehicles.add(vehicle)
                 }
             }
 
-            if (purchasedVehicles.isEmpty())
-            {
+            // Remove duplicates (same vehicle ordered multiple times)
+            val uniqueVehicles = purchasedVehicles.distinctBy { it.id }
+
+            if (uniqueVehicles.isEmpty()) {
                 emptyOrdersText.visibility = View.VISIBLE
                 ordersRecyclerView.visibility = View.GONE
-            }
-            else
-            {
+            } else {
                 emptyOrdersText.visibility = View.GONE
                 ordersRecyclerView.visibility = View.VISIBLE
-                orderVehicleAdapter.updateVehicles(purchasedVehicles)
+                orderVehicleAdapter.updateVehicles(uniqueVehicles)
             }
         }
     }
@@ -94,103 +93,83 @@ class OrdersActivity : AppCompatActivity()
 
 class OrderVehicleAdapter(
     private var vehicles: List<Vehicle>
-) : RecyclerView.Adapter<OrderVehicleAdapter.OrderVehicleViewHolder>()
-{
-    class OrderVehicleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    {
+) : RecyclerView.Adapter<OrderVehicleAdapter.OrderVehicleViewHolder>() {
+
+    class OrderVehicleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val vehicleImage: ImageView = itemView.findViewById(R.id.vehicleImage)
-        val typeTextView: TextView = itemView.findViewById(R.id.carTitle)
+        val titleTextView: TextView = itemView.findViewById(R.id.carTitle)
         val priceTextView: TextView = itemView.findViewById(R.id.priceText)
         val mileageTextView: TextView = itemView.findViewById(R.id.mileageText)
         val yearTextView: TextView = itemView.findViewById(R.id.yearText)
         val heartCheckBox: CheckBox = itemView.findViewById(R.id.checkBox3)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderVehicleViewHolder
-    {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderVehicleViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.car_template, parent, false)
-
         return OrderVehicleViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: OrderVehicleViewHolder, position: Int)
-    {
+    override fun onBindViewHolder(holder: OrderVehicleViewHolder, position: Int) {
         val vehicle = vehicles[position]
         val context = holder.itemView.context
         val isDarkMode = ThemeManager.isDarkMode(context)
 
-        if (vehicle.isSampleImage && vehicle.imagePath.isNotEmpty())
-        {
+        // Load image
+        if (vehicle.isSampleImage && vehicle.imagePath.isNotEmpty()) {
             val resourceId = context.resources.getIdentifier(
                 vehicle.imagePath,
                 "drawable",
                 context.packageName
             )
-
-            if (resourceId != 0)
-            {
+            if (resourceId != 0) {
                 Glide.with(context)
                     .load(resourceId)
                     .placeholder(R.drawable.placeholder_car)
                     .error(R.drawable.placeholder_car)
                     .centerCrop()
                     .into(holder.vehicleImage)
-            }
-            else
-            {
+            } else {
                 holder.vehicleImage.setImageResource(R.drawable.placeholder_car)
             }
-        }
-        else if (vehicle.imagePath.isNotEmpty())
-        {
+        } else if (vehicle.imagePath.isNotEmpty()) {
             val imageFile = File(vehicle.imagePath)
-            if (imageFile.exists())
-            {
+            if (imageFile.exists()) {
                 Glide.with(context)
                     .load(imageFile)
                     .placeholder(R.drawable.placeholder_car)
                     .error(R.drawable.placeholder_car)
                     .centerCrop()
                     .into(holder.vehicleImage)
-            }
-            else
-            {
+            } else {
                 holder.vehicleImage.setImageResource(R.drawable.placeholder_car)
             }
-        }
-        else
-        {
+        } else {
             holder.vehicleImage.setImageResource(R.drawable.placeholder_car)
         }
 
-        holder.typeTextView.text = "${vehicle.year} ${vehicle.type}"
+        // Set text content
+        holder.titleTextView.text = "${vehicle.year} ${vehicle.brand} ${vehicle.model}"
         holder.priceTextView.text = "$${String.format("%,.2f", vehicle.price)}"
         holder.mileageTextView.text = "${vehicle.mileage} miles"
-        holder.yearTextView.text = vehicle.year.toString()
+        holder.yearTextView.text = vehicle.type
 
-        if (isDarkMode)
-        {
-            holder.typeTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle_dark))
+        // Apply theme-aware text colors
+        if (isDarkMode) {
+            holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle_dark))
             holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice_dark))
             holder.mileageTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))
             holder.yearTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails_dark))
-        }
-        else
-        {
-            holder.typeTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle))
+        } else {
+            holder.titleTextView.setTextColor(ContextCompat.getColor(context, R.color.infoTitle))
             holder.priceTextView.setTextColor(ContextCompat.getColor(context, R.color.infoPrice))
             holder.mileageTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails))
             holder.yearTextView.setTextColor(ContextCompat.getColor(context, R.color.infoDetails))
         }
 
-        holder.heartCheckBox.isChecked = false
-        holder.heartCheckBox.buttonTintList = ColorStateList.valueOf(
-            ContextCompat.getColor(context, android.R.color.transparent)
-        )
-
-        val heartContainer = holder.heartCheckBox.parent as View
-        heartContainer.visibility = View.GONE
+        // Hide heart checkbox for orders
+        holder.heartCheckBox.visibility = View.GONE
+        (holder.heartCheckBox.parent as? View)?.visibility = View.GONE
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, VehicleDetailActivity::class.java)
@@ -201,8 +180,7 @@ class OrderVehicleAdapter(
 
     override fun getItemCount(): Int = vehicles.size
 
-    fun updateVehicles(newVehicles: List<Vehicle>)
-    {
+    fun updateVehicles(newVehicles: List<Vehicle>) {
         vehicles = newVehicles
         notifyDataSetChanged()
     }
